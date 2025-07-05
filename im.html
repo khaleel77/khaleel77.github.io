@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InternetMeter - Speed & Usage Monitor</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Apple icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for dark mode */
+        .dark ::-webkit-scrollbar {
+            width: 8px;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #2d3748; /* bg-gray-800 */
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #4a5568; /* bg-gray-700 */
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280; /* bg-gray-600 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+
+    <div class="min-h-screen flex flex-col items-center justify-center p-4">
+        <!-- Theme Toggle Button -->
+        <button id="theme-toggle" class="absolute top-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <!-- Sun Icon (Light Mode) -->
+            <svg id="sun-icon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h1M3 12H2m15.325-4.675l.707-.707M6.343 17.657l-.707.707M17.657 6.343l.707-.707M6.343 6.343l-.707-.707"/>
+            </svg>
+            <!-- Moon Icon (Dark Mode) -->
+            <svg id="moon-icon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+            </svg>
+        </button>
+
+        <!-- Main Content Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-8 lg:p-10 max-w-4xl w-full mx-auto">
+            <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+                <!-- App Icon Placeholder -->
+                <div class="flex-shrink-0">
+                    <img src="https://placehold.co/128x128/007AFF/ffffff?text=App+Icon" alt="InternetMeter App Icon" class="w-24 h-24 md:w-32 md:h-32 rounded-2xl shadow-md">
+                </div>
+
+                <!-- App Details -->
+                <div class="text-center md:text-left flex-grow">
+                    <h1 class="text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">InternetMeter</h1>
+                    <p class="text-lg text-gray-600 dark:text-gray-300 mb-4">Monitor your internet speed and data usage in real-time.</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">App ID: <span class="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-md">kha.prog.SpeedMeter</span></p>
+
+                    <!-- App Store Button -->
+                    <a href="https://apps.apple.com/us/app/internetmeter/id{your-app-store-id}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+                        <i class="fab fa-apple mr-3 text-xl"></i> Download on the App Store
+                    </a>
+                </div>
+            </div>
+
+            <!-- App Description -->
+            <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">About InternetMeter</h2>
+                <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                    InternetMeter is an essential iOS application designed to give you complete control and insight into your internet connection. With its intuitive interface, you can effortlessly monitor your real-time download and upload speeds, track daily and monthly data usage, and identify potential network bottlenecks.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                    Whether you're concerned about exceeding your data cap, troubleshooting slow internet, or simply curious about your network performance, InternetMeter provides accurate and easy-to-understand metrics right on your iPhone or iPad.
+                </p>
+            </div>
+
+            <!-- Key Features Section -->
+            <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Key Features</h2>
+                <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2">
+                    <li><strong class="font-medium">Real-time Speed Monitoring:</strong> See your current download and upload speeds instantly.</li>
+                    <li><strong class="font-medium">Data Usage Tracking:</strong> Keep a detailed log of your daily, weekly, and monthly data consumption.</li>
+                    <li><strong class="font-medium">Historical Data:</strong> Review past performance and usage trends.</li>
+                    <li><strong class="font-medium">Customizable Alerts:</strong> Set notifications for data usage thresholds.</li>
+                    <li><strong class="font-medium">Network Information:</strong> View details about your connected Wi-Fi or cellular network.</li>
+                    <li><strong class="font-medium">Sleek & Intuitive UI:</strong> A user-friendly design optimized for iOS.</li>
+                </ul>
+            </div>
+
+            <!-- Screenshots/Gallery (Placeholder) -->
+            <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Screenshots</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <img src="https://placehold.co/300x500/cccccc/333333?text=Screenshot+1" alt="App Screenshot 1" class="rounded-lg shadow-md w-full h-auto">
+                    <img src="https://placehold.co/300x500/cccccc/333333?text=Screenshot+2" alt="App Screenshot 2" class="rounded-lg shadow-md w-full h-auto">
+                    <img src="https://placehold.co/300x500/cccccc/333333?text=Screenshot+3" alt="App Screenshot 3" class="rounded-lg shadow-md w-full h-auto">
+                </div>
+            </div>
+
+            <!-- Contact/Support (Placeholder) -->
+            <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Support & Feedback</h2>
+                <p class="text-gray-700 dark:text-gray-300 mb-4">
+                    If you have any questions or need assistance, please don't hesitate to contact us.
+                </p>
+                <a href="mailto:support@internetmeter.app" class="text-blue-600 dark:text-blue-400 hover:underline">support@internetmeter.app</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const sunIcon = document.getElementById('sun-icon');
+        const moonIcon = document.getElementById('moon-icon');
+        const htmlElement = document.documentElement;
+
+        // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+        // Checks local storage first, then system preference
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlElement.classList.add('dark');
+            moonIcon.classList.remove('hidden');
+            sunIcon.classList.add('hidden');
+        } else {
+            htmlElement.classList.remove('dark');
+            sunIcon.classList.remove('hidden');
+            moonIcon.classList.add('hidden');
+        }
+
+        // Event listener for the theme toggle button
+        themeToggle.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                localStorage.theme = 'light';
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                htmlElement.classList.add('dark');
+                localStorage.theme = 'dark';
+                moonIcon.classList.remove('hidden');
+                sunIcon.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
