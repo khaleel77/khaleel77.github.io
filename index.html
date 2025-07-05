@@ -540,7 +540,7 @@
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                console.log(`${path} incremented to ${newValue}`);
+                console.log(`${path} incremented`);
                 return newValue;
             }
              catch (error) {
