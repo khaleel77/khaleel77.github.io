@@ -1,250 +1,498 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NetShare - Share Your Internet Connection</title>
+    <title>NetShare: No Root Tethering - Share Your Internet Effortlessly</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Font Awesome for icons (e.g., download, features) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* CSS Variables for Light Mode */
+        :root {
+            --bg-primary: #f8f8f8;
+            --text-primary: #333;
+            --bg-header: #ffffff;
+            --text-header: #333;
+            --bg-card: #ffffff;
+            --text-card-heading: #333;
+            --text-card-body: #666;
+            --border-card: #e5e7eb; /* gray-100 */
+            --bg-section-light: #f9fafb; /* bg-gray-50 */
+            --bg-section-white: #ffffff;
+            --text-section-heading: #1f2937; /* gray-800 */
+            --bg-footer: #1f2937; /* gray-800 */
+            --text-footer: #ffffff;
+            --shadow-card: 0 4px 10px rgba(0, 0, 0, 0.05);
+            --shadow-section: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* CSS Variables for Dark Mode */
+        .dark-mode {
+            --bg-primary: #1a202c; /* dark gray */
+            --text-primary: #e2e8f0; /* light gray */
+            --bg-header: #2d3748; /* darker gray */
+            --text-header: #e2e8f0;
+            --bg-card: #2d3748;
+            --text-card-heading: #e2e8f0;
+            --text-card-body: #a0aec0; /* slightly darker light gray */
+            --border-card: #4a5568; /* darker gray border */
+            --bg-section-light: #2d3748; /* darker gray for sections */
+            --bg-section-white: #1a202c; /* even darker for white sections */
+            --text-section-heading: #e2e8f0;
+            --bg-footer: #000000; /* black for footer */
+            --text-footer: #a0aec0;
+            --shadow-card: 0 4px 10px rgba(0, 0, 0, 0.3);
+            --shadow-section: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-        }
-        /* Custom scrollbar for dark mode */
-        .dark ::-webkit-scrollbar {
-            width: 8px;
-        }
-        .dark ::-webkit-scrollbar-track {
-            background: #1a202c; /* bg-gray-900 */
-        }
-        .dark ::-webkit-scrollbar-thumb {
-            background: #4a5568; /* bg-gray-700 */
-            border-radius: 4px;
-        }
-        .dark ::-webkit-scrollbar-thumb:hover {
-            background: #6b7280; /* bg-gray-600 */
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* Gradient for buttons */
-        .btn-gradient {
-            background: linear-gradient(to right, #4F46E5, #6366F1); /* Indigo 600 to Indigo 500 */
-            transition: all 0.3s ease;
+        /* Apply variables to specific elements */
+        header {
+            background-color: var(--bg-header);
+            color: var(--text-header);
         }
-        .btn-gradient:hover {
-            background: linear-gradient(to right, #6366F1, #4F46E5); /* Reverse gradient on hover */
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        header a, header nav ul li a {
+            color: var(--text-header);
         }
-        .btn-gradient:active {
-            transform: translateY(1px);
+        header nav ul li a:hover {
+            color: #2E86DE; /* Blue hover remains consistent */
         }
 
-        /* Feature card hover effect */
-        .feature-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        .gradient-bg {
+            background: linear-gradient(to right, #4CAF50, #2E86DE); /* Gradient remains consistent */
+        }
+        .btn-primary {
+            background-color: #2E86DE; /* Blue remains consistent */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #1a6bbd; /* Darker blue on hover remains consistent */
+        }
+        .feature-card, .platform-link {
+            background-color: var(--bg-card);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--border-card); /* Add border for definition */
         }
         .feature-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
-        .dark .feature-card:hover {
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        .feature-card h3, .platform-link span {
+            color: var(--text-card-heading);
+        }
+        .feature-card p {
+            color: var(--text-card-body);
+        }
+
+        .icon-circle {
+            background-color: #e0f2f7; /* Light blue remains consistent */
+            border-radius: 9999px; /* Fully rounded */
+            padding: 0.75rem;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        /* Custom SVG icons for features */
+        .icon-no-root { width: 24px; height: 24px; fill: #2E86DE; }
+        .icon-speed { width: 24px; height: 24px; fill: #4CAF50; }
+        .icon-secure { width: 24px; height: 24px; fill: #FFC107; }
+        .icon-easy { width: 24px; height: 24px; fill: #9C27B0; }
+        .icon-battery { width: 24px; height: 24px; fill: #F44336; }
+
+        .platform-link:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-card);
+        }
+        .platform-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 0.75rem;
+            fill: var(--text-primary); /* Icon color changes with theme */
+            transition: fill 0.3s ease;
+        }
+
+        /* Section backgrounds and text */
+        section.bg-gray-50 {
+            background-color: var(--bg-section-light);
+            transition: background-color 0.3s ease;
+        }
+        section.bg-white {
+            background-color: var(--bg-section-white);
+            transition: background-color 0.3s ease;
+        }
+        h2, h3 {
+            color: var(--text-section-heading);
+            transition: color 0.3s ease;
+        }
+        section p {
+            color: var(--text-primary);
+        }
+
+        /* Testimonial cards */
+        .bg-white.p-6.rounded-xl.shadow-md.border { /* Specificity for testimonial cards */
+            background-color: var(--bg-card);
+            border-color: var(--border-card);
+            box-shadow: var(--shadow-card);
+        }
+        .bg-white.p-6.rounded-xl.shadow-md.border p {
+            color: var(--text-card-body);
+        }
+        .bg-white.p-6.rounded-xl.shadow-md.border .font-semibold {
+            color: var(--text-card-heading);
+        }
+
+        /* FAQ items */
+        .bg-gray-50.p-6.rounded-xl.shadow-sm.border {
+            background-color: var(--bg-card);
+            border-color: var(--border-card);
+            box-shadow: var(--shadow-card);
+        }
+        .bg-gray-50.p-6.rounded-xl.shadow-sm.border h3 {
+            color: var(--text-card-heading);
+        }
+        .bg-gray-50.p-6.rounded-xl.shadow-sm.border p {
+            color: var(--text-card-body);
+        }
+
+        footer {
+            background-color: var(--bg-footer);
+            color: var(--text-footer);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        footer a {
+            color: var(--text-footer);
+        }
+        footer a:hover {
+            color: #9ca3af; /* A lighter gray for hover */
+        }
+
+        /* Theme Toggle Button Styles */
+        #theme-toggle {
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-card);
+            padding: 0.5rem 1rem;
+            border-radius: 9999px; /* Pill shape */
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        #theme-toggle:hover {
+            background-color: var(--bg-section-light);
+        }
+        #theme-toggle svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+<body class="antialiased">
 
-    <!-- Header -->
-    <header class="bg-white dark:bg-gray-800 shadow-sm dark:shadow-lg py-4 px-6 md:px-12 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <!-- Logo/Site Title -->
-            <a href="#" class="flex items-center space-x-2">
-                <img src="https://placehold.co/40x40/4F46E5/ffffff?text=NS" alt="NetShare Logo" class="rounded-lg">
-                <span class="text-2xl font-extrabold text-gray-900 dark:text-white">NetShare</span>
-            </a>
-
-            <!-- Navigation Links (Hidden on mobile, shown on larger screens) -->
-            <nav class="hidden md:flex space-x-8">
-                <a href="#hero" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors duration-200">Home</a>
-                <a href="#features" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors duration-200">Features</a>
-                <a href="#download" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors duration-200">Download</a>
-                <a href="#contact" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors duration-200">Contact</a>
+    <!-- Header/Navigation -->
+    <header class="shadow-sm py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold rounded-md p-2">NetShare</a>
+            <nav class="hidden md:flex items-center space-x-6">
+                <ul class="flex space-x-6">
+                    <li><a href="#features" class="hover:text-blue-600 font-medium rounded-md p-2">Features</a></li>
+                    <li><a href="#how-it-works" class="hover:text-blue-600 font-medium rounded-md p-2">How It Works</a></li>
+                    <li><a href="#connection-guides" class="hover:text-blue-600 font-medium rounded-md p-2">Guides</a></li>
+                    <li><a href="#faq" class="hover:text-blue-600 font-medium rounded-md p-2">FAQ</a></li>
+                </ul>
+                <a href="https://play.google.com/store/apps/details?id=com.example.netshare" target="_blank" class="btn-primary">Download App</a>
+                <button id="theme-toggle" aria-label="Toggle dark mode">
+                    <svg id="moon-icon" class="hidden" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                    </svg>
+                    <svg id="sun-icon" class="hidden" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 17.5a5.5 5.5 0 100-11 5.5 5.5 0 000 11zM12 21a1 1 0 01-1-1v-1a1 1 0 112 0v1a1 1 0 01-1 1zM12 3a1 1 0 011 1v1a1 1 0 11-2 0V4a1 1 0 011-1zM21 12a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM3 12a1 1 0 011 1h1a1 1 0 110-2H4a1 1 0 01-1 1zM18.36 18.36a1 1 0 01-.707 1.707l-.707-.707a1 1 0 011.414-1.414l.707.707zM6.34 6.34a1 1 0 01-.707 1.707L4.929 7.05a1 1 0 011.414-1.414l.707.707zM17.65 5.64a1 1 0 01.707 1.707l-.707.707a1 1 0 01-1.414-1.414l.707-.707zM5.64 17.65a1 1 0 01.707 1.707l.707-.707a1 1 0 01-1.414-1.414l-.707.707z"/>
+                    </svg>
+                </button>
             </nav>
-
-            <!-- Theme Toggle Button -->
-            <button id="theme-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <!-- Sun Icon (Light Mode) -->
-                <svg id="sun-icon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h1M3 12H2m15.325-4.675l.707-.707M6.343 17.657l-.707.707M17.657 6.343l.707-.707M6.343 6.343l-.707-.707"/>
-                </svg>
-                <!-- Moon Icon (Dark Mode) -->
-                <svg id="moon-icon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-                </svg>
+            <!-- Mobile menu button (hidden for this simple page, but good for future) -->
+            <button class="md:hidden text-gray-600 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
             </button>
         </div>
     </header>
 
     <main>
         <!-- Hero Section -->
-        <section id="hero" class="relative bg-gradient-to-br from-indigo-600 to-purple-700 dark:from-indigo-900 dark:to-purple-900 text-white py-20 md:py-32 overflow-hidden rounded-b-3xl shadow-xl">
-            <div class="absolute inset-0 opacity-10 dark:opacity-20 bg-pattern" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zm0 15v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM12 34v-4h-2v4H6v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4H6v2h4v4h2V6h4V4h-4zm0 15v-4h-2v4H6v2h4v4h2v-4h4v-2h-4z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
-            <div class="max-w-7xl mx-auto px-6 md:px-12 text-center relative z-10">
-                <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6 animate-fade-in-up">
-                    Share Your Internet, Effortlessly.
-                </h1>
-                <p class="text-xl md:text-2xl opacity-90 mb-10 max-w-3xl mx-auto animate-fade-in">
-                    NetShare allows you to share your mobile internet connection with other devices via Wi-Fi Direct, without requiring root access.
-                </p>
-                <div class="flex flex-col sm:flex-row justify-center items-center gap-4 animate-fade-in-up delay-200">
-                    <a href="https://play.google.com/store/apps/details?id=com.netshare" target="_blank" rel="noopener noreferrer" class="btn-gradient text-white font-bold py-3 px-8 rounded-full shadow-lg flex items-center justify-center w-full sm:w-auto">
-                        <i class="fab fa-google-play mr-3 text-xl"></i> Download for Android
-                    </a>
-                    <a href="#" class="bg-white text-indigo-600 dark:text-indigo-800 font-bold py-3 px-8 rounded-full shadow-lg flex items-center justify-center w-full sm:w-auto hover:bg-gray-100 transition-colors duration-300 transform hover:scale-105">
-                        <i class="fab fa-apple mr-3 text-xl"></i> Download for iOS (Coming Soon)
-                    </a>
-                </div>
+        <section class="gradient-bg text-white py-20 px-4 text-center rounded-b-3xl shadow-lg">
+            <div class="container mx-auto max-w-4xl">
+                <h1 class="text-5xl md:text-6xl font-bold mb-4 leading-tight rounded-md p-2">NetShare: No Root Tethering</h1>
+                <p class="text-xl md:text-2xl mb-8 opacity-90 rounded-md p-2">Share Your Internet Connection Effortlessly & Securely, Without Root Access!</p>
+                <a href="https://play.google.com/store/apps/details?id=com.example.netshare" target="_blank" class="inline-block bg-white text-blue-600 font-bold py-3 px-8 rounded-full text-lg shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                    Download on Google Play
+                    <svg class="inline-block ml-2 w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 2.5L17 12L7 21.5V2.5ZM19 2V22L24 12L19 2Z"/></svg>
+                </a>
+                <!-- Placeholder for app screenshot/video -->
                 <div class="mt-12">
-                    <img src="https://placehold.co/800x450/4F46E5/ffffff?text=NetShare+App+Mockup" alt="NetShare App Mockup" class="mx-auto rounded-xl shadow-2xl border-4 border-indigo-300 dark:border-indigo-700 transform hover:scale-102 transition-transform duration-500">
+                    <img src="https://placehold.co/800x450/cccccc/333333?text=App+Screenshot+Here" alt="NetShare App Screenshot" class="mx-auto rounded-xl shadow-2xl border-4 border-white">
                 </div>
             </div>
         </section>
 
         <!-- Features Section -->
-        <section id="features" class="py-16 md:py-24 bg-gray-50 dark:bg-gray-950">
-            <div class="max-w-7xl mx-auto px-6 md:px-12 text-center">
-                <h2 class="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">Powerful Features at Your Fingertips</h2>
-                <p class="text-lg text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto">
-                    NetShare is packed with features to make internet sharing seamless and secure.
-                </p>
-
+        <section id="features" class="py-16 px-4 bg-section-light">
+            <div class="container mx-auto text-center max-w-6xl">
+                <h2 class="text-4xl font-bold mb-12">Why Choose NetShare?</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Feature Card 1 -->
-                    <div class="feature-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center text-center border border-gray-200 dark:border-gray-700">
-                        <div class="bg-indigo-100 dark:bg-indigo-700 text-indigo-600 dark:text-indigo-200 rounded-full p-4 mb-6">
-                            <i class="fas fa-wifi text-3xl"></i>
+                    <!-- Feature Card 1: No Root Required -->
+                    <div class="feature-card">
+                        <div class="icon-circle">
+                            <svg class="icon-no-root" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                            </svg>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3">Wi-Fi Direct Sharing</h3>
-                        <p class="text-gray-600 dark:text-gray-300">
-                            Share your internet connection directly via Wi-Fi Direct, bypassing traditional hotspot limitations.
-                        </p>
+                        <h3 class="text-xl font-semibold mb-2">No Root Required</h3>
+                        <p>Enjoy seamless internet sharing without the need to root your Android device, preserving your warranty and security.</p>
                     </div>
 
-                    <!-- Feature Card 2 -->
-                    <div class="feature-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center text-center border border-gray-200 dark:border-gray-700">
-                        <div class="bg-green-100 dark:bg-green-700 text-green-600 dark:text-green-200 rounded-full p-4 mb-6">
-                            <i class="fas fa-shield-alt text-3xl"></i>
+                    <!-- Feature Card 2: High Speed Sharing -->
+                    <div class="feature-card">
+                        <div class="icon-circle">
+                            <svg class="icon-speed" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.25 20.37 10.5 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9z"/>
+                            </svg>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3">No Root Required</h3>
-                        <p class="text-gray-600 dark:text-gray-300">
-                            Enjoy full functionality without needing to root your Android device, ensuring security and ease of use.
-                        </p>
+                        <h3 class="text-xl font-semibold mb-2">Blazing Fast Speeds</h3>
+                        <p>Experience high-speed internet sharing, perfect for streaming, gaming, and heavy browsing on connected devices.</p>
                     </div>
 
-                    <!-- Feature Card 3 -->
-                    <div class="feature-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center text-center border border-gray-200 dark:border-gray-700">
-                        <div class="bg-red-100 dark:bg-red-700 text-red-600 dark:text-red-200 rounded-full p-4 mb-6">
-                            <i class="fas fa-mobile-alt text-3xl"></i>
+                    <!-- Feature Card 3: Secure Connection -->
+                    <div class="feature-card">
+                        <div class="icon-circle">
+                            <svg class="icon-secure" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.7-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                            </svg>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3">Cross-Device Compatibility</h3>
-                        <p class="text-gray-600 dark:text-gray-300">
-                            Connect laptops, tablets, and other smartphones to your shared internet.
-                        </p>
+                        <h3 class="text-xl font-semibold mb-2">Secure & Private</h3>
+                        <p>Your connection is encrypted, ensuring your data and privacy are protected while sharing your internet.</p>
                     </div>
 
-                    <!-- Feature Card 4 -->
-                    <div class="feature-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center text-center border border-gray-200 dark:border-gray-700">
-                        <div class="bg-yellow-100 dark:bg-yellow-700 text-yellow-600 dark:text-yellow-200 rounded-full p-4 mb-6">
-                            <i class="fas fa-tachometer-alt text-3xl"></i>
+                    <!-- Feature Card 4: Easy Setup -->
+                    <div class="feature-card">
+                        <div class="icon-circle">
+                            <svg class="icon-easy" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                            </svg>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3">High Speed Connection</h3>
-                        <p class="text-gray-600 dark:text-gray-300">
-                            Experience fast and reliable internet speeds, optimized for sharing.
-                        </p>
+                        <h3 class="text-xl font-semibold mb-2">Simple & Intuitive</h3>
+                        <p>Get started in minutes with our user-friendly interface. No complex configurations needed.</p>
                     </div>
 
-                    <!-- Feature Card 5 -->
-                    <div class="feature-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center text-center border border-gray-200 dark:border-gray-700">
-                        <div class="bg-blue-100 dark:bg-blue-700 text-blue-600 dark:text-blue-200 rounded-full p-4 mb-6">
-                            <i class="fas fa-lock text-3xl"></i>
+                    <!-- Feature Card 5: Battery Efficient -->
+                    <div class="feature-card">
+                        <div class="icon-circle">
+                            <svg class="icon-battery" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M17 4h-3V2h-4v2H7v18h10V4zm-2 2v2H9V6h6zm-6 14v-2h6v2H9z"/>
+                            </svg>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3">Secure & Private</h3>
-                        <p class="text-gray-600 dark:text-gray-300">
-                            Your connection is secured with standard encryption protocols to protect your data.
-                        </p>
+                        <h3 class="text-xl font-semibold mb-2">Optimized Battery Use</h3>
+                        <p>Designed to minimize battery consumption, allowing you to share internet longer without draining your device.</p>
                     </div>
 
-                    <!-- Feature Card 6 -->
-                    <div class="feature-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center text-center border border-gray-200 dark:border-gray-700">
-                        <div class="bg-purple-100 dark:bg-purple-700 text-purple-600 dark:text-purple-200 rounded-full p-4 mb-6">
-                            <i class="fas fa-cogs text-3xl"></i>
+                    <!-- Feature Card 6: Wide Compatibility -->
+                    <div class="feature-card">
+                        <div class="icon-circle">
+                            <svg class="icon-easy" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 0h-4V4h4v2z"/>
+                            </svg>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3">Easy Setup</h3>
-                        <p class="text-gray-600 dark:text-gray-300">
-                            Get started in minutes with a simple and intuitive setup process.
-                        </p>
+                        <h3 class="text-xl font-semibold mb-2">Broad Device Compatibility</h3>
+                        <p>Connect various devices like laptops, tablets, and other smartphones to your shared internet connection.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="py-16 px-4 bg-section-white">
+            <div class="container mx-auto text-center max-w-4xl">
+                <h2 class="text-4xl font-bold mb-12">How It Works in 3 Simple Steps</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="flex flex-col items-center p-6 rounded-xl shadow-md border border-gray-100 bg-card">
+                        <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-3xl font-bold mb-4">1</div>
+                        <h3 class="text-xl font-semibold mb-2">Download & Install</h3>
+                        <p>Get NetShare from the Google Play Store and install it on your Android device.</p>
+                    </div>
+                    <div class="flex flex-col items-center p-6 rounded-xl shadow-md border border-gray-100 bg-card">
+                        <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl font-bold mb-4">2</div>
+                        <h3 class="text-xl font-semibold mb-2">Activate Sharing</h3>
+                        <p>Open the app and follow the simple on-screen instructions to enable internet sharing.</p>
+                    </div>
+                    <div class="flex flex-col items-center p-6 rounded-xl shadow-md border border-gray-100 bg-card">
+                        <div class="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-3xl font-bold mb-4">3</div>
+                        <h3 class="text-xl font-semibold mb-2">Connect Your Devices</h3>
+                        <p>Connect your laptop, tablet, or other phones to your shared network and enjoy!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Connection Guides Section -->
+        <section id="connection-guides" class="py-16 px-4 bg-section-light">
+            <div class="container mx-auto text-center max-w-6xl">
+                <h2 class="text-4xl font-bold mb-12">Connection Guides for Your Devices</h2>
+                <p class="text-lg mb-8">Click on your device or operating system below to get detailed setup instructions.</p>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+                    <!-- Android Guide -->
+                    <a href="https://example.com/netshare-guide/android" target="_blank" class="platform-link">
+                        <svg class="platform-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18.5 2.5a2.5 2.5 0 00-2.5 2.5V7h-2V5a2.5 2.5 0 00-5 0v2h-2V5a2.5 2.5 0 00-5 0v14a2.5 2.5 0 005 0v-2h2v2a2.5 2.5 0 005 0v-2h2v2a2.5 2.5 0 005 0V5a2.5 2.5 0 00-2.5-2.5zM12 19h-2v-2h2v2zm0-4h-2v-2h2v2zM12 9h-2V7h2v2z"/>
+                        </svg>
+                        <span class="text-lg font-semibold">Android</span>
+                    </a>
+                    <!-- iOS Guide -->
+                    <a href="https://example.com/netshare-guide/ios" target="_blank" class="platform-link">
+                        <svg class="platform-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 0c-3.31 0-6 2.69-6 6v12c0 3.31 2.69 6 6 6s6-2.69 6-6V6c0-3.31-2.69-6-6-6zm0 2c2.21 0 4 1.79 4 4v12c0 2.21-1.79 4-4 4s-4-1.79-4-4V6c0-2.21 1.79-4 4-4zm0 18c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+                        </svg>
+                        <span class="text-lg font-semibold">iOS</span>
+                    </a>
+                    <!-- Windows Guide -->
+                    <a href="https://example.com/netshare-guide/windows" target="_blank" class="platform-link">
+                        <svg class="platform-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0 3.5l9-1.5v19L0 20.5V3.5zm10 0l14-2.5v20L10 22.5V3.5z"/>
+                        </svg>
+                        <span class="text-lg font-semibold">Windows</span>
+                    </a>
+                    <!-- Mac Guide -->
+                    <a href="https://example.com/netshare-guide/mac" target="_blank" class="platform-link">
+                        <svg class="platform-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18.7 17.3c-1.6 1.6-3.7 2.7-6.1 2.7-4.4 0-8-3.6-8-8s3.6-8 8-8c2.4 0 4.5 1.1 6.1 2.7L22 4.6l-1.4-1.4-2.9 2.9C15.7 3.1 12.9 2 10 2 4.5 2 0 6.5 0 12s4.5 10 10 10c2.9 0 5.7-1.1 7.8-3.1l2.9 2.9 1.4-1.4L18.7 17.3z"/>
+                        </svg>
+                        <span class="text-lg font-semibold">Mac</span>
+                    </a>
+                    <!-- PS4 Guide -->
+                    <a href="https://example.com/netshare-guide/ps4" target="_blank" class="platform-link">
+                        <svg class="platform-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2-11h-2v2h2v-2zm4 0h-2v2h2v-2zm-4 4h-2v2h2v-2zm4 0h-2v2h2v-2z"/>
+                        </svg>
+                        <span class="text-lg font-semibold">PS4</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section (Placeholder) -->
+        <section class="py-16 px-4 bg-section-light">
+            <div class="container mx-auto text-center max-w-4xl">
+                <h2 class="text-4xl font-bold mb-12">What Our Users Say</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="p-6 rounded-xl shadow-md border bg-card">
+                        <p class="italic mb-4">"NetShare is a lifesaver! I can finally share my phone's internet with my laptop without any hassle. No root, no problem!"</p>
+                        <p class="font-semibold">- Jane Doe, Tech Enthusiast</p>
+                    </div>
+                    <div class="p-6 rounded-xl shadow-md border bg-card">
+                        <p class="italic mb-4">"Amazingly simple and fast. I've tried other apps, but NetShare truly delivers on its promise. Highly recommended!"</p>
+                        <p class="font-semibold">- John Smith, Remote Worker</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" class="py-16 px-4 bg-section-white">
+            <div class="container mx-auto max-w-4xl">
+                <h2 class="text-4xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+                <div class="space-y-6">
+                    <!-- FAQ Item 1 -->
+                    <div class="p-6 rounded-xl shadow-sm border bg-card">
+                        <h3 class="text-xl font-semibold mb-2">Do I need to root my phone to use NetShare?</h3>
+                        <p>No, that's the best part! NetShare is designed to work seamlessly on non-rooted Android devices, ensuring your device's security and warranty remain intact.</p>
+                    </div>
+                    <!-- FAQ Item 2 -->
+                    <div class="p-6 rounded-xl shadow-sm border bg-card">
+                        <h3 class="text-xl font-semibold mb-2">What kind of devices can I connect to my NetShare hotspot?</h3>
+                        <p>You can connect a wide range of devices, including laptops, tablets, other smartphones, smart TVs, and gaming consoles, as long as they have Wi-Fi capabilities.</p>
+                    </div>
+                    <!-- FAQ Item 3 -->
+                    <div class="p-6 rounded-xl shadow-sm border bg-card">
+                        <h3 class="text-xl font-semibold mb-2">Is my internet connection secure with NetShare?</h3>
+                        <p>Yes, NetShare prioritizes your security. The connection is encrypted to protect your data and privacy while you're sharing your internet.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Call to Action Section -->
-        <section id="download" class="bg-indigo-600 dark:bg-indigo-900 text-white py-16 md:py-20 text-center rounded-t-3xl shadow-xl">
-            <div class="max-w-4xl mx-auto px-6 md:px-12">
-                <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Experience Seamless Internet Sharing?</h2>
-                <p class="text-lg opacity-90 mb-10">
-                    Download NetShare today and unlock the full potential of your mobile internet connection.
-                </p>
-                <a href="https://play.google.com/store/apps/details?id=com.netshare" target="_blank" rel="noopener noreferrer" class="btn-gradient text-white font-bold py-4 px-10 rounded-full shadow-xl flex items-center justify-center mx-auto w-fit transform hover:scale-105">
-                    <i class="fab fa-google-play mr-3 text-2xl"></i> Get NetShare on Google Play
+        <section class="gradient-bg text-white py-20 px-4 text-center rounded-t-3xl shadow-lg">
+            <div class="container mx-auto max-w-3xl">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">Ready to Share Your Internet?</h2>
+                <p class="text-xl md:text-2xl mb-10 opacity-90">Download NetShare today and experience hassle-free internet tethering!</p>
+                <a href="https://play.google.com/store/apps/details?id=com.example.netshare" target="_blank" class="inline-block bg-white text-blue-600 font-bold py-3 px-8 rounded-full text-lg shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                    Download on Google Play
+                    <svg class="inline-block ml-2 w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 2.5L17 12L7 21.5V2.5ZM19 2V22L24 12L19 2Z"/></svg>
                 </a>
             </div>
         </section>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 dark:bg-gray-900 text-gray-300 py-10 px-6 md:px-12">
-        <div class="max-w-7xl mx-auto text-center md:flex md:justify-between md:items-center">
-            <p class="mb-4 md:mb-0">&copy; 2023 NetShare. All rights reserved.</p>
-            <div class="flex justify-center space-x-6">
-                <a href="#" class="hover:text-white transition-colors duration-200">Privacy Policy</a>
-                <a href="#" class="hover:text-white transition-colors duration-200">Terms of Service</a>
-                <a href="#" class="hover:text-white transition-colors duration-200">Contact Us</a>
+    <footer class="py-8 px-4">
+        <div class="container mx-auto text-center text-sm">
+            <p>&copy; 2023 NetShare. All rights reserved.</p>
+            <div class="mt-4 space-x-4">
+                <a href="#" class="hover:underline">Privacy Policy</a>
+                <a href="#" class="hover:underline">Terms of Service</a>
+                <a href="#" class="hover:underline">Contact Us</a>
             </div>
         </div>
     </footer>
 
     <script>
         const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
         const sunIcon = document.getElementById('sun-icon');
         const moonIcon = document.getElementById('moon-icon');
-        const htmlElement = document.documentElement;
 
-        // On page load or when changing themes, best to add inline in `head` to avoid FOUC
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            htmlElement.classList.add('dark');
-            moonIcon.classList.remove('hidden');
-            sunIcon.classList.add('hidden');
-        } else {
-            htmlElement.classList.remove('dark');
-            sunIcon.classList.remove('hidden');
-            moonIcon.classList.add('hidden');
-        }
-
-        themeToggle.addEventListener('click', () => {
-            if (htmlElement.classList.contains('dark')) {
-                htmlElement.classList.remove('dark');
-                localStorage.theme = 'light';
+        // Function to set the theme
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                body.classList.add('dark-mode');
                 sunIcon.classList.remove('hidden');
                 moonIcon.classList.add('hidden');
+                localStorage.setItem('theme', 'dark');
             } else {
-                htmlElement.classList.add('dark');
-                localStorage.theme = 'dark';
-                moonIcon.classList.remove('hidden');
+                body.classList.remove('dark-mode');
                 sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Check for saved theme preference on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            setTheme(savedTheme);
+        });
+
+        // Toggle theme on button click
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('dark-mode')) {
+                setTheme('light');
+            } else {
+                setTheme('dark');
             }
         });
     </script>
