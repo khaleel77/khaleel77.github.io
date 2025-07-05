@@ -1,1 +1,148 @@
-hellow
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MikroTik Tools - Android App</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for dark mode */
+        .dark ::-webkit-scrollbar {
+            width: 8px;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #2d3748; /* bg-gray-800 */
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #4a5568; /* bg-gray-700 */
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280; /* bg-gray-600 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+
+    <div class="min-h-screen flex flex-col items-center justify-center p-4">
+        <!-- Theme Toggle Button -->
+        <button id="theme-toggle" class="absolute top-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <!-- Sun Icon (Light Mode) -->
+            <svg id="sun-icon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h1M3 12H2m15.325-4.675l.707-.707M6.343 17.657l-.707.707M17.657 6.343l.707-.707M6.343 6.343l-.707-.707"/>
+            </svg>
+            <!-- Moon Icon (Dark Mode) -->
+            <svg id="moon-icon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+            </svg>
+        </button>
+
+        <!-- Main Content Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-8 lg:p-10 max-w-4xl w-full mx-auto">
+            <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+                <!-- App Icon Placeholder -->
+                <div class="flex-shrink-0">
+                    <img src="https://placehold.co/128x128/007bff/ffffff?text=App+Icon" alt="App Icon" class="w-24 h-24 md:w-32 md:h-32 rounded-2xl shadow-md">
+                </div>
+
+                <!-- App Details -->
+                <div class="text-center md:text-left flex-grow">
+                    <h1 class="text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">MikroTik Tools</h1>
+                    <p class="text-lg text-gray-600 dark:text-gray-300 mb-4">Your essential companion for MikroTik network management.</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">App ID: <span class="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-md">kha.prog.mikrotik</span></p>
+
+                    <!-- Google Play Button -->
+                    <a href="https://play.google.com/store/apps/details?id=kha.prog.mikrotik" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow-md transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+                        <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M7 2.73L14.33 10 7 17.27V2.73M17 10l-3-3v6l3-3z"/>
+                        </svg>
+                        Download on Google Play
+                    </a>
+                </div>
+            </div>
+
+            <!-- App Description -->
+            <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">About This App</h2>
+                <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                    MikroTik Tools is a powerful and intuitive Android application designed for network administrators and enthusiasts who work with MikroTik routers and devices. It provides a comprehensive suite of tools to monitor, configure, and troubleshoot your MikroTik network directly from your smartphone or tablet.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                    Whether you're managing a small home network or a complex corporate infrastructure, MikroTik Tools offers the functionality you need to stay in control.
+                </p>
+            </div>
+
+            <!-- Key Features Section -->
+            <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Key Features</h2>
+                <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2">
+                    <li><strong class="font-medium">Device Discovery:</strong> Easily find and connect to MikroTik devices on your network.</li>
+                    <li><strong class="font-medium">Real-time Monitoring:</strong> Keep an eye on CPU usage, memory, traffic, and connected clients.</li>
+                    <li><strong class="font-medium">Configuration Management:</strong> Modify router settings, manage users, and configure interfaces.</li>
+                    <li><strong class="font-medium">Traffic Analysis:</strong> Visualize network traffic and identify bandwidth hogs.</li>
+                    <li><strong class="font-medium">Ping & Traceroute:</strong> Essential network diagnostic tools at your fingertips.</li>
+                    <li><strong class="font-medium">Secure Connection:</strong> Supports secure connections to your MikroTik devices.</li>
+                    <li><strong class="font-medium">User-Friendly Interface:</strong> Designed for ease of use on mobile devices.</li>
+                </ul>
+            </div>
+
+            <!-- Screenshots/Gallery (Placeholder) -->
+            <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Screenshots</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <img src="https://placehold.co/300x500/cccccc/333333?text=Screenshot+1" alt="App Screenshot 1" class="rounded-lg shadow-md w-full h-auto">
+                    <img src="https://placehold.co/300x500/cccccc/333333?text=Screenshot+2" alt="App Screenshot 2" class="rounded-lg shadow-md w-full h-auto">
+                    <img src="https://placehold.co/300x500/cccccc/333333?text=Screenshot+3" alt="App Screenshot 3" class="rounded-lg shadow-md w-full h-auto">
+                </div>
+            </div>
+
+            <!-- Contact/Support (Placeholder) -->
+            <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Support & Feedback</h2>
+                <p class="text-gray-700 dark:text-gray-300 mb-4">
+                    Have questions or need assistance? Feel free to reach out to us!
+                </p>
+                <a href="mailto:support@example.com" class="text-blue-600 dark:text-blue-400 hover:underline">support@example.com</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const sunIcon = document.getElementById('sun-icon');
+        const moonIcon = document.getElementById('moon-icon');
+        const htmlElement = document.documentElement;
+
+        // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlElement.classList.add('dark');
+            moonIcon.classList.remove('hidden');
+            sunIcon.classList.add('hidden');
+        } else {
+            htmlElement.classList.remove('dark');
+            sunIcon.classList.remove('hidden');
+            moonIcon.classList.add('hidden');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                localStorage.theme = 'light';
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                htmlElement.classList.add('dark');
+                localStorage.theme = 'dark';
+                moonIcon.classList.remove('hidden');
+                sunIcon.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
