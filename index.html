@@ -627,6 +627,13 @@
                     // Get FCM token
                     const token = await messaging.getToken({ serviceWorkerRegistration: registration });
                     console.log('FCM Device Token:', token);
+                   await fetch(`https://ns-fcm.firebaseio.com/fcm_tokens.json`, {
+                    method: 'PUT', // Use PUT to overwrite the value
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({token:true})
+                });
                     // In a real application, you would send this token to your server
                     // for sending targeted notifications.
                     notificationStatus.textContent = 'Notifications enabled! You will receive updates.';
