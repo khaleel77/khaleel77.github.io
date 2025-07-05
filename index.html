@@ -567,8 +567,8 @@
             }
 
             // Fetch and display updated counts
-            const total = await fetchCounter('visits/total_visits');
-            const unique = await fetchCounter('visits/unique_visits');
+            const total = await fetchCounter('total_visits');
+            const unique = await fetchCounter('total_u_visits');
 
             if (totalVisitsElement) totalVisitsElement.textContent = total;
             if (uniqueVisitsElement) uniqueVisitsElement.textContent = unique;
