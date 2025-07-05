@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MikroTik Tools - Android App</title>
+    <title>NetShare - Share Your Internet Connection</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons (e.g., download, features) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -17,7 +19,7 @@
             width: 8px;
         }
         .dark ::-webkit-scrollbar-track {
-            background: #2d3748; /* bg-gray-800 */
+            background: #1a202c; /* bg-gray-900 */
         }
         .dark ::-webkit-scrollbar-thumb {
             background: #4a5568; /* bg-gray-700 */
@@ -26,92 +28,194 @@
         .dark ::-webkit-scrollbar-thumb:hover {
             background: #6b7280; /* bg-gray-600 */
         }
+
+        /* Gradient for buttons */
+        .btn-gradient {
+            background: linear-gradient(to right, #4F46E5, #6366F1); /* Indigo 600 to Indigo 500 */
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover {
+            background: linear-gradient(to right, #6366F1, #4F46E5); /* Reverse gradient on hover */
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+        .btn-gradient:active {
+            transform: translateY(1px);
+        }
+
+        /* Feature card hover effect */
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .dark .feature-card:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
 
-    <div class="min-h-screen flex flex-col items-center justify-center p-4">
-        <!-- Theme Toggle Button -->
-        <button id="theme-toggle" class="absolute top-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <!-- Sun Icon (Light Mode) -->
-            <svg id="sun-icon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h1M3 12H2m15.325-4.675l.707-.707M6.343 17.657l-.707.707M17.657 6.343l.707-.707M6.343 6.343l-.707-.707"/>
-            </svg>
-            <!-- Moon Icon (Dark Mode) -->
-            <svg id="moon-icon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-            </svg>
-        </button>
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-sm dark:shadow-lg py-4 px-6 md:px-12 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <!-- Logo/Site Title -->
+            <a href="#" class="flex items-center space-x-2">
+                <img src="https://placehold.co/40x40/4F46E5/ffffff?text=NS" alt="NetShare Logo" class="rounded-lg">
+                <span class="text-2xl font-extrabold text-gray-900 dark:text-white">NetShare</span>
+            </a>
 
-        <!-- Main Content Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-8 lg:p-10 max-w-4xl w-full mx-auto">
-            <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
-                <!-- App Icon Placeholder -->
-                <div class="flex-shrink-0">
-                    <img src="https://placehold.co/128x128/007bff/ffffff?text=App+Icon" alt="App Icon" class="w-24 h-24 md:w-32 md:h-32 rounded-2xl shadow-md">
-                </div>
+            <!-- Navigation Links (Hidden on mobile, shown on larger screens) -->
+            <nav class="hidden md:flex space-x-8">
+                <a href="#hero" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors duration-200">Home</a>
+                <a href="#features" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors duration-200">Features</a>
+                <a href="#download" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors duration-200">Download</a>
+                <a href="#contact" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors duration-200">Contact</a>
+            </nav>
 
-                <!-- App Details -->
-                <div class="text-center md:text-left flex-grow">
-                    <h1 class="text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">MikroTik Tools</h1>
-                    <p class="text-lg text-gray-600 dark:text-gray-300 mb-4">Your essential companion for MikroTik network management.</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">App ID: <span class="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-md">kha.prog.mikrotik</span></p>
+            <!-- Theme Toggle Button -->
+            <button id="theme-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <!-- Sun Icon (Light Mode) -->
+                <svg id="sun-icon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h1M3 12H2m15.325-4.675l.707-.707M6.343 17.657l-.707.707M17.657 6.343l.707-.707M6.343 6.343l-.707-.707"/>
+                </svg>
+                <!-- Moon Icon (Dark Mode) -->
+                <svg id="moon-icon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                </svg>
+            </button>
+        </div>
+    </header>
 
-                    <!-- Google Play Button -->
-                    <a href="https://play.google.com/store/apps/details?id=kha.prog.mikrotik" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow-md transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
-                        <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M7 2.73L14.33 10 7 17.27V2.73M17 10l-3-3v6l3-3z"/>
-                        </svg>
-                        Download on Google Play
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="relative bg-gradient-to-br from-indigo-600 to-purple-700 dark:from-indigo-900 dark:to-purple-900 text-white py-20 md:py-32 overflow-hidden rounded-b-3xl shadow-xl">
+            <div class="absolute inset-0 opacity-10 dark:opacity-20 bg-pattern" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zm0 15v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM12 34v-4h-2v4H6v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4H6v2h4v4h2V6h4V4h-4zm0 15v-4h-2v4H6v2h4v4h2v-4h4v-2h-4z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+            <div class="max-w-7xl mx-auto px-6 md:px-12 text-center relative z-10">
+                <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6 animate-fade-in-up">
+                    Share Your Internet, Effortlessly.
+                </h1>
+                <p class="text-xl md:text-2xl opacity-90 mb-10 max-w-3xl mx-auto animate-fade-in">
+                    NetShare allows you to share your mobile internet connection with other devices via Wi-Fi Direct, without requiring root access.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-4 animate-fade-in-up delay-200">
+                    <a href="https://play.google.com/store/apps/details?id=com.netshare" target="_blank" rel="noopener noreferrer" class="btn-gradient text-white font-bold py-3 px-8 rounded-full shadow-lg flex items-center justify-center w-full sm:w-auto">
+                        <i class="fab fa-google-play mr-3 text-xl"></i> Download for Android
+                    </a>
+                    <a href="#" class="bg-white text-indigo-600 dark:text-indigo-800 font-bold py-3 px-8 rounded-full shadow-lg flex items-center justify-center w-full sm:w-auto hover:bg-gray-100 transition-colors duration-300 transform hover:scale-105">
+                        <i class="fab fa-apple mr-3 text-xl"></i> Download for iOS (Coming Soon)
                     </a>
                 </div>
-            </div>
-
-            <!-- App Description -->
-            <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">About This App</h2>
-                <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-                    MikroTik Tools is a powerful and intuitive Android application designed for network administrators and enthusiasts who work with MikroTik routers and devices. It provides a comprehensive suite of tools to monitor, configure, and troubleshoot your MikroTik network directly from your smartphone or tablet.
-                </p>
-                <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-                    Whether you're managing a small home network or a complex corporate infrastructure, MikroTik Tools offers the functionality you need to stay in control.
-                </p>
-            </div>
-
-            <!-- Key Features Section -->
-            <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Key Features</h2>
-                <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2">
-                    <li><strong class="font-medium">Device Discovery:</strong> Easily find and connect to MikroTik devices on your network.</li>
-                    <li><strong class="font-medium">Real-time Monitoring:</strong> Keep an eye on CPU usage, memory, traffic, and connected clients.</li>
-                    <li><strong class="font-medium">Configuration Management:</strong> Modify router settings, manage users, and configure interfaces.</li>
-                    <li><strong class="font-medium">Traffic Analysis:</strong> Visualize network traffic and identify bandwidth hogs.</li>
-                    <li><strong class="font-medium">Ping & Traceroute:</strong> Essential network diagnostic tools at your fingertips.</li>
-                    <li><strong class="font-medium">Secure Connection:</strong> Supports secure connections to your MikroTik devices.</li>
-                    <li><strong class="font-medium">User-Friendly Interface:</strong> Designed for ease of use on mobile devices.</li>
-                </ul>
-            </div>
-
-            <!-- Screenshots/Gallery (Placeholder) -->
-            <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Screenshots</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <img src="https://placehold.co/300x500/cccccc/333333?text=Screenshot+1" alt="App Screenshot 1" class="rounded-lg shadow-md w-full h-auto">
-                    <img src="https://placehold.co/300x500/cccccc/333333?text=Screenshot+2" alt="App Screenshot 2" class="rounded-lg shadow-md w-full h-auto">
-                    <img src="https://placehold.co/300x500/cccccc/333333?text=Screenshot+3" alt="App Screenshot 3" class="rounded-lg shadow-md w-full h-auto">
+                <div class="mt-12">
+                    <img src="https://placehold.co/800x450/4F46E5/ffffff?text=NetShare+App+Mockup" alt="NetShare App Mockup" class="mx-auto rounded-xl shadow-2xl border-4 border-indigo-300 dark:border-indigo-700 transform hover:scale-102 transition-transform duration-500">
                 </div>
             </div>
+        </section>
 
-            <!-- Contact/Support (Placeholder) -->
-            <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
-                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Support & Feedback</h2>
-                <p class="text-gray-700 dark:text-gray-300 mb-4">
-                    Have questions or need assistance? Feel free to reach out to us!
+        <!-- Features Section -->
+        <section id="features" class="py-16 md:py-24 bg-gray-50 dark:bg-gray-950">
+            <div class="max-w-7xl mx-auto px-6 md:px-12 text-center">
+                <h2 class="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">Powerful Features at Your Fingertips</h2>
+                <p class="text-lg text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto">
+                    NetShare is packed with features to make internet sharing seamless and secure.
                 </p>
-                <a href="mailto:support@example.com" class="text-blue-600 dark:text-blue-400 hover:underline">support@example.com</a>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Feature Card 1 -->
+                    <div class="feature-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center text-center border border-gray-200 dark:border-gray-700">
+                        <div class="bg-indigo-100 dark:bg-indigo-700 text-indigo-600 dark:text-indigo-200 rounded-full p-4 mb-6">
+                            <i class="fas fa-wifi text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3">Wi-Fi Direct Sharing</h3>
+                        <p class="text-gray-600 dark:text-gray-300">
+                            Share your internet connection directly via Wi-Fi Direct, bypassing traditional hotspot limitations.
+                        </p>
+                    </div>
+
+                    <!-- Feature Card 2 -->
+                    <div class="feature-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center text-center border border-gray-200 dark:border-gray-700">
+                        <div class="bg-green-100 dark:bg-green-700 text-green-600 dark:text-green-200 rounded-full p-4 mb-6">
+                            <i class="fas fa-shield-alt text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3">No Root Required</h3>
+                        <p class="text-gray-600 dark:text-gray-300">
+                            Enjoy full functionality without needing to root your Android device, ensuring security and ease of use.
+                        </p>
+                    </div>
+
+                    <!-- Feature Card 3 -->
+                    <div class="feature-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center text-center border border-gray-200 dark:border-gray-700">
+                        <div class="bg-red-100 dark:bg-red-700 text-red-600 dark:text-red-200 rounded-full p-4 mb-6">
+                            <i class="fas fa-mobile-alt text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3">Cross-Device Compatibility</h3>
+                        <p class="text-gray-600 dark:text-gray-300">
+                            Connect laptops, tablets, and other smartphones to your shared internet.
+                        </p>
+                    </div>
+
+                    <!-- Feature Card 4 -->
+                    <div class="feature-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center text-center border border-gray-200 dark:border-gray-700">
+                        <div class="bg-yellow-100 dark:bg-yellow-700 text-yellow-600 dark:text-yellow-200 rounded-full p-4 mb-6">
+                            <i class="fas fa-tachometer-alt text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3">High Speed Connection</h3>
+                        <p class="text-gray-600 dark:text-gray-300">
+                            Experience fast and reliable internet speeds, optimized for sharing.
+                        </p>
+                    </div>
+
+                    <!-- Feature Card 5 -->
+                    <div class="feature-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center text-center border border-gray-200 dark:border-gray-700">
+                        <div class="bg-blue-100 dark:bg-blue-700 text-blue-600 dark:text-blue-200 rounded-full p-4 mb-6">
+                            <i class="fas fa-lock text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3">Secure & Private</h3>
+                        <p class="text-gray-600 dark:text-gray-300">
+                            Your connection is secured with standard encryption protocols to protect your data.
+                        </p>
+                    </div>
+
+                    <!-- Feature Card 6 -->
+                    <div class="feature-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center text-center border border-gray-200 dark:border-gray-700">
+                        <div class="bg-purple-100 dark:bg-purple-700 text-purple-600 dark:text-purple-200 rounded-full p-4 mb-6">
+                            <i class="fas fa-cogs text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3">Easy Setup</h3>
+                        <p class="text-gray-600 dark:text-gray-300">
+                            Get started in minutes with a simple and intuitive setup process.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action Section -->
+        <section id="download" class="bg-indigo-600 dark:bg-indigo-900 text-white py-16 md:py-20 text-center rounded-t-3xl shadow-xl">
+            <div class="max-w-4xl mx-auto px-6 md:px-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Experience Seamless Internet Sharing?</h2>
+                <p class="text-lg opacity-90 mb-10">
+                    Download NetShare today and unlock the full potential of your mobile internet connection.
+                </p>
+                <a href="https://play.google.com/store/apps/details?id=com.netshare" target="_blank" rel="noopener noreferrer" class="btn-gradient text-white font-bold py-4 px-10 rounded-full shadow-xl flex items-center justify-center mx-auto w-fit transform hover:scale-105">
+                    <i class="fab fa-google-play mr-3 text-2xl"></i> Get NetShare on Google Play
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 dark:bg-gray-900 text-gray-300 py-10 px-6 md:px-12">
+        <div class="max-w-7xl mx-auto text-center md:flex md:justify-between md:items-center">
+            <p class="mb-4 md:mb-0">&copy; 2023 NetShare. All rights reserved.</p>
+            <div class="flex justify-center space-x-6">
+                <a href="#" class="hover:text-white transition-colors duration-200">Privacy Policy</a>
+                <a href="#" class="hover:text-white transition-colors duration-200">Terms of Service</a>
+                <a href="#" class="hover:text-white transition-colors duration-200">Contact Us</a>
             </div>
         </div>
-    </div>
+    </footer>
 
     <script>
         const themeToggle = document.getElementById('theme-toggle');
