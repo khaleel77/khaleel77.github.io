@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" href="favicon.ico" />
+  <title>NetShare - Android setup</title>
+  <meta name="description" content="Setup NetShare connetion in android devices">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://github.com/khaleel77/Net-Share-App/blob/master/style.css?raw=true">
+  <style type="text/css">
+    .container-fluid {
+    padding: 60px 50px;
+  }
+  </style>
+  
+       
+</head>
+<body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
+
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="/myPage">NetShare</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav navbar-right">                
+       
+       <li><a href="/android" o="/help_android();">Android</a></li>
+        	<li><a href="/ios" o="/help_ios();">IOS</a></li>
+        	<li><a href="/windows" o="/help_windows();">Windows</a></li>
+        	<li><a href="/mac" o="/help_mac();">Mac</a></li>
+        	<li><a href="/chromebook" o="/help_chromebook();">Chromebook</a></li>
+        	<li><a href="/ps4" o="/help_ps4();">PS4</a></li>
+        	<li><a href="/android-proxy" o="/help_proxy();">Android Proxy</a></li>
+        
+      <!--  <li><a href="/pricing">الإسعار</a></li>
+        <li><a href="/contact">تواصل معنا</a></li>-->
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+
+
+
+
+<div  class="container-fluid ">
+  <div class="row">
+  
+    <div class="col-sm-3"></div>
+     <div class="col-sm-6">
+       
+
+<p>these instructions are valid for any device that run android apps like android including tablets, Chromebooks(which supports Google Play Store), carplays. </p>
+<ol>
+    <li>Install NetShare app in the device</li>
+    <li>From the main screen tap on 'CONNECT' and wait until the app connects</li>
+<img src="https://github.com/khaleel77/Net-Share-App/blob/master/connect.png?raw=true"
+                             style="margin:10px;max-width:100%;"
+        >
+    <li>If the VPN permission request appears please tap 'OK'</li>
+       
+</ol>
+      </div>
+     <div class="col-sm-3"></div>
+    </div>     
+  </div>
+</div>
+<!--
+ <div class="row"  style='display:none;right:56px;top:70px;position:absolute;'>
+<button style='width:unset;margin:0 10px 0 10px;background-color:gainsboro;color:black;' onclick='requestPermission();' class="mbtn btn btn-default btn-lg-2 fcm">Enable</button> notifications to be notified whenever a support of new device is added</div>
+
+<br>
+
+<div id="portfolio" class="container-fluid text-center bg-grey">	
+  <h2>Other Apps</h2><br>
+  
+  <div class="row text-center slideanim">
+    
+    <div class="col-sm-12">
+      <div class="thumbnail">
+        <a href='https://tetherg.com/pLwyeq'>  <img style="width:192px;height:192px;" src="https://tetherg.com/pLwyeq?p=true" alt="radius" width="192" height="192">
+        <p><strong>Throttle</strong></p>
+        <p>Lite Firewall</p>
+    </a>
+      </div>
+    </div>
+    
+  </div>
+
+
+  
+
+</div>
+
+
+<footer class="container-fluid text-center">
+  <a href="/myPage" title="To Top">
+    <span class="glyphicon glyphicon-chevron-up"></span>
+  </a>
+  
+</footer>
+
+-->
+<script>
+	 // Your web app's Firebase configuration
+
+$(document).ready(function(){
+  // Add smooth scrolling to all links in navbar + footer link
+  $(".navbar a, footer a[href='#myPage']").on('click', function(event) {
+    // Make sure this.hash has a value before overriding default behavior
+    if (this.hash !== "") {
+      // Prevent default anchor click behavior
+      event.preventDefault();
+
+      // Store hash
+      var hash = this.hash;
+
+      // Using jQuery's animate() method to add smooth page scroll
+      // The optional number (900) specifies the number of milliseconds it takes to scroll to the specified area
+      $('html, body').animate({
+        scrollTop: $(hash).offset().top
+      }, 900, function(){
+   
+        // Add hash (#) to URL when done scrolling (default click behavior)
+        window.location.hash = hash;
+      });
+    } // End if
+  });
+  
+  $(window).scroll(function() {
+    $(".slideanim").each(function(){
+      var pos = $(this).offset().top;
+
+      var winTop = $(window).scrollTop();
+        if (pos < winTop + 600) {
+          $(this).addClass("slide");
+        }
+    });
+  });
+});
+  
+  
+
+  </script>
+
+</body>
+</html>
