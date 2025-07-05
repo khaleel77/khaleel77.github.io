@@ -555,13 +555,13 @@
             const uniqueVisitsElement = document.getElementById('unique-visits');
 
             // Increment total visits
-            await incrementCounter('visits/total_visits');
+            await incrementCounter('total_visits');
 
            
             // Increment unique visits (using localStorage to prevent multiple increments from same browser session)
             const uniqueVisitKey = 'netshare_unique_visit';
             if (!localStorage.getItem(uniqueVisitKey)) {
-                await incrementCounter('visits/unique_visits');
+                await incrementCounter('total_u_visits');
                 
                 localStorage.setItem(uniqueVisitKey, 'true'); // Mark as visited
             }
