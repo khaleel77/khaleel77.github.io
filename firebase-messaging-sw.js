@@ -42,26 +42,14 @@ messaging.onBackgroundMessage((payload) => {
     }
 
      if(payload.data.id){
-       await fetch(`https://ns-fcm.firebaseio.com/delivery/${payload.data.id}/delivered.json`, {
-                    method: 'PUT', // Use PUT to overwrite the value
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ ".sv": {"increment": 1 }})
-                });
+        event.waitUntil(increment(payload.data.id, 'delivered'));
     }
    // saveValue('fcm.last', payload.data.body);
     //if (payload.data.url){
          self.addEventListener('notificationclick', function(event) {
 
               if(payload.data.id){
-       await fetch(`https://ns-fcm.firebaseio.com/delivery/${payload.data.id}/clicked.json`, {
-                    method: 'PUT', // Use PUT to overwrite the value
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ ".sv": {"increment": 1 }})
-                });
+       event.waitUntil(increment(payload.data.id, 'click'));
     }
       event.notification.close();
             
@@ -75,3 +63,13 @@ messaging.onBackgroundMessage((payload) => {
   
     
 });
+async function increment(path, s)
+{
+    await fetch(`https://ns-fcm.firebaseio.com/delivery/${path}/${s}.json`, {
+                    method: 'PUT', // Use PUT to overwrite the value
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ".sv": {"increment": 1 }})
+                });
+}
