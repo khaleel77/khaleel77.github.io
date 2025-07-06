@@ -6,7 +6,8 @@
     <title>NetShare: No Root Tethering - Share Your Internet Effortlessly</title>
     <!-- Tailwind CSS CDN -->
     <link rel="icon" type="image/png" href="favicon.ico">
-    <script src="https://cdn.tailwindcss.com"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Firebase SDKs for App and Messaging -->
@@ -215,9 +216,18 @@
                 <a href="https://play.google.com/store/apps/details?id=kha.prog.mikrotik&utm_source=netshare_web" target="_blank" class="btn-primary">Download App</a>
             </nav>
             <!-- Mobile menu button (hidden for this simple page, but good for future) -->
-            <button class="md:hidden text-gray-600 focus:outline-none">
+           <button id="mobile-menu-button" class="md:hidden text-gray-600 focus:outline-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
             </button>
+        </div>
+        <div id="mobile-nav-menu" class="hidden md:hidden bg-header py-2 shadow-md">
+            <ul class="flex flex-col items-center space-y-2">
+                <li><a href="#features" class="block w-full text-center py-2 hover:bg-gray-100 dark:hover:bg-gray-700 font-medium rounded-md">Features</a></li>
+                <li><a href="#how-it-works" class="block w-full text-center py-2 hover:bg-gray-100 dark:hover:bg-gray-700 font-medium rounded-md">How It Works</a></li>
+                <li><a href="#connection-guides" class="block w-full text-center py-2 hover:bg-gray-100 dark:hover:bg-gray-700 font-medium rounded-md">Guides</a></li>
+                <li><a href="#faq" class="block w-full text-center py-2 hover:bg-gray-100 dark:hover:bg-gray-700 font-medium rounded-md">FAQ</a></li>
+                <li><a href="https://play.google.com/store/apps/details?id=com.example.netshare" target="_blank" class="btn-primary block w-auto mx-4 mt-2">Download App</a></li>
+            </ul>
         </div>
     </header>
 
@@ -231,12 +241,12 @@
             <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Install NetShare" width="162" height="63">
           </a>
                 <!-- App Screenshots Carousel/Image -->
-                <div class="mt-12">
+               <!-- <div class="mt-12">
                     <img src="land.png" alt="NetShare App Screenshot 0" class="mx-auto rounded-xl shadow-2xl border-4 border-white">
-                    <!-- You can add more images here and implement a carousel with JavaScript if desired -->
-                    <!-- <img src="unnamed1.jpg" alt="NetShare App Screenshot 1" class="hidden"> 
-                      <img src="unnamed2.jpg" alt="NetShare App Screenshot 2" class="hidden">-->
-                </div>
+                    
+                     <img src="unnamed1.jpg" alt="NetShare App Screenshot 1" class="hidden"> 
+                      <img src="unnamed2.jpg" alt="NetShare App Screenshot 2" class="hidden">
+                </div>-->
             </div>
         </section>
 
@@ -417,6 +427,20 @@
                         <h3 class="text-xl font-semibold mb-2">Is my internet connection secure with NetShare?</h3>
                         <p>Yes, NetShare prioritizes your security. The connection is encrypted to protect your data and privacy while you're sharing your internet.</p>
                     </div>
+
+                    <div class="p-6 rounded-xl shadow-sm border bg-card">
+                        <h3 class="text-xl font-semibold mb-2">Connected to the Wi-Fi Hotspot successfully but NO internet?</h3>
+                        <p>Follow the instructions in the help section for every device you want to connect. If you already followed the instructions you may have to test the internet in the browser if the connected device is not Android.</p>
+                    </div>
+                    <div class="p-6 rounded-xl shadow-sm border bg-card">
+                        <h3 class="text-xl font-semibold mb-2">Some apps doesn't detect the internet connection?</h3>
+                        <p>This is due to proxy protocol limitation. it is mainly designed for web surfing.</p>
+                    </div>
+                    <div class="p-6 rounded-xl shadow-sm border bg-card">
+                        <h3 class="text-xl font-semibold mb-2">I have purchased the app but it still limited and promote me to purchase again?</h3>
+                        <p>Reinstall the app/key from play store with the same account you purchased with.</p>
+                    </div>
+                    
                 </div>
             </div>
         </section>
@@ -673,6 +697,22 @@
             enableNotificationsBtn.addEventListener('click', requestNotificationPermissionAndGetToken);
         }
 
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileNavMenu = document.getElementById('mobile-nav-menu');
+
+        if (mobileMenuButton && mobileNavMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileNavMenu.classList.toggle('hidden');
+                mobileNavMenu.classList.toggle('flex'); // Add flex to make it a flex container when visible
+            });
+            // Close mobile menu when a link is clicked
+            mobileNavMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileNavMenu.classList.add('hidden');
+                    mobileNavMenu.classList.remove('flex');
+                });
+            });
+        }
         // Call functions on page load
         document.addEventListener('DOMContentLoaded', () => {
             updateVisitCounts();
