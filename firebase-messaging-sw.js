@@ -29,12 +29,12 @@ messaging.onBackgroundMessage((payload) => {
         icon: payload.data.icon || 'favicon.ico' // Or your custom icon
     };
 
-    self.registration.showNotification(notificationTitle, notificationOptions);
+  //  self.registration.showNotification(notificationTitle, notificationOptions);
 
     
 
      if(payload.data.id){
-        event.waitUntil(increment(payload.data.id, 'delivered'));
+        increment(payload.data.id, 'delivered');
     }
    // saveValue('fcm.last', payload.data.body);
     //if (payload.data.url){
