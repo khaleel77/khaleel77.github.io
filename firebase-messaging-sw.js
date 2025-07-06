@@ -31,15 +31,7 @@ messaging.onBackgroundMessage((payload) => {
 
     self.registration.showNotification(notificationTitle, notificationOptions);
 
-    if(payload.data.id){
-       await fetch(`https://ns-fcm.firebaseio.com/delivery/${payload.data.id}/delivered.json`, {
-                    method: 'PUT', // Use PUT to overwrite the value
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ ".sv": {"increment": 1 }})
-                });
-    }
+    
 
      if(payload.data.id){
         event.waitUntil(increment(payload.data.id, 'delivered'));
