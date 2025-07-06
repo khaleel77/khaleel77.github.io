@@ -26,35 +26,52 @@ messaging.onBackgroundMessage((payload) => {
     const notificationTitle = payload.data.title;
     const notificationOptions = {
         body: payload.data.body,
-        icon: payload.data.icon || '/favicon.ico' // Or your custom icon
+        icon: payload.data.icon || 'favicon.ico' // Or your custom icon
     };
 
     self.registration.showNotification(notificationTitle, notificationOptions);
-    
 
-    
-    channel.postMessage(payload.data.body);
+    if(payload.data.id){
+       await fetch(`https://ns-fcm.firebaseio.com/delivery/${payload.data.id}/delivered.json`, {
+                    method: 'PUT', // Use PUT to overwrite the value
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ".sv": {"increment": 1 }})
+                });
+    }
 
+     if(payload.data.id){
+       await fetch(`https://ns-fcm.firebaseio.com/delivery/${payload.data.id}/delivered.json`, {
+                    method: 'PUT', // Use PUT to overwrite the value
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ".sv": {"increment": 1 }})
+                });
+    }
    // saveValue('fcm.last', payload.data.body);
+    //if (payload.data.url){
+         self.addEventListener('notificationclick', function(event) {
 
-    self.addEventListener('notificationclick', function(event) {
-
+              if(payload.data.id){
+       await fetch(`https://ns-fcm.firebaseio.com/delivery/${payload.data.id}/clicked.json`, {
+                    method: 'PUT', // Use PUT to overwrite the value
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ".sv": {"increment": 1 }})
+                });
+    }
       event.notification.close();
-       if (!event.action) {
-         
-         channel.postMessage(payload.data.body);
-
-        
-         if(payload.data.url) clients.openWindow(payload.data.url);
-         else if(isValidUrl(payload.data.body)) clients.openWindow(payload.data.body);
-         else clients.openWindow("/?data="+payload.data.body); 
-    // Was a normal notification click
-    console.log('Notification Click.');
-    return;
-  }
+            
+      if (payload.data.url) clients.openWindow(payload.data.url);
+      else  clients.openWindow('/');
          // 
          
     }, false);
+    
+   
   
     
 });
