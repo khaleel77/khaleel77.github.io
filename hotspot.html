@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotspot Dashboard</title>
+    <!-- Tailwind CSS for modern, responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        /* Base styles for the body */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom styles for hotspot status backgrounds, applied to body */
+        .hotspot-on {
+            background-color: #f0fdf4; /* Light green for light theme */
+        }
+        .dark .hotspot-on {
+            background-color: #0c1a17; /* Dark green for dark theme */
+        }
+        .hotspot-off {
+            background-color: #f8fafc; /* Light gray for light theme */
+        }
+        .dark .hotspot-off {
+            background-color: #0d131f; /* Dark blue-gray for dark theme */
+        }
+        
+        .toggle-switch {
+            width: 50px;
+            height: 28px;
+            background-color: #ccc;
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .toggle-switch.on {
+            background-color: #38a169;
+        }
+        .toggle-switch .slider {
+            width: 24px;
+            height: 24px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+        .toggle-switch.on .slider {
+            transform: translateX(22px);
+        }
+        .blocked-device {
+            opacity: 0.5;
+            text-decoration: line-through;
+            color: #ef4444; /* red-500 */
+        }
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none; /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+    </style>
+</head>
+<body class="hotspot-off transition-colors duration-500">
+    <!-- Main container with dark background and centered content -->
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-4xl bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 rounded-3xl shadow-2xl p-6 md:p-10 border border-gray-100 dark:border-gray-700 transform transition-transform duration-500 hover:scale-[1.01]">
+            
+            <!-- Header section -->
+            <header class="text-center mb-10 relative">
+                <h1 class="text-4xl font-bold tracking-tight">Hotspot Dashboard</h1>
+                <p class="mt-2 text-lg text-gray-500 dark:text-gray-400">Monitor your tethering activity in real-time.</p>
+            </header>
+
+            <!-- Hotspot Status & Toggle -->
+            <div id="hotspot-status-card" class="flex items-center justify-between p-6 bg-slate-50 dark:bg-gray-800 rounded-2xl shadow-inner mb-6 transition-all duration-300">
+                <div class="flex items-center space-x-4">
+                    <div id="status-indicator" class="w-4 h-4 rounded-full bg-gray-400 transition-colors duration-300"></div>
+                    <p class="text-xl font-medium text-gray-700 dark:text-gray-200">Hotspot Status:</p>
+                    <span id="hotspot-status" class="text-xl font-bold text-gray-500 dark:text-gray-400 transition-colors duration-300">Off</span>
+                </div>
+                <div id="toggle-hotspot" class="toggle-switch cursor-pointer">
+                    <div class="slider"></div>
+                </div>
+            </div>
+
+            <!-- Hotspot Configuration Display and Button -->
+            <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-2xl shadow-lg mb-6 flex justify-between items-center transition-transform duration-300 hover:scale-105">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">Hotspot Configuration</h3>
+                    <p class="text-sm font-normal text-gray-500 dark:text-gray-400 mt-1">SSID: <span id="current-ssid" class="font-medium text-gray-700 dark:text-gray-200">My Personal Hotspot</span></p>
+                    <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Password: <span id="current-password" class="font-medium text-gray-700 dark:text-gray-200">*******</span></p>
+                    <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Band: <span id="current-band" class="font-medium text-gray-700 dark:text-gray-200">2.4 GHz</span></p>
+                </div>
+                <button id="open-config-modal" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-200">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+            </div>
+            
+            <!-- Main content grid for usage and speed -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                
+                <!-- Data Usage Card -->
+                <div class="bg-indigo-50 dark:bg-indigo-900 p-6 rounded-2xl shadow-lg transition-transform duration-300 hover:scale-105">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold text-indigo-800 dark:text-indigo-100">Data Usage</h3>
+                        <i class="fas fa-chart-bar text-2xl text-indigo-600"></i>
+                    </div>
+                    <p class="text-sm font-medium text-indigo-600">Total Data Used</p>
+                    <div class="flex items-end mt-1">
+                        <p id="total-usage" class="text-4xl font-bold text-indigo-900 dark:text-indigo-200">0.00</p>
+                        <span class="ml-2 text-2xl text-indigo-600 font-semibold">GB</span>
+                    </div>
+                    <div class="w-full bg-indigo-200 dark:bg-indigo-700 rounded-full h-2.5 mt-4">
+                        <div id="usage-progress" class="bg-indigo-500 h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                    <p id="usage-limit-text" class="text-right text-xs text-indigo-500 dark:text-indigo-300 mt-2">0.00 GB / 10.00 GB</p>
+                </div>
+
+                <!-- Hotspot Speed Card -->
+                <div class="bg-sky-50 dark:bg-sky-900 p-6 rounded-2xl shadow-lg transition-transform duration-300 hover:scale-105">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold text-sky-800 dark:text-sky-100">Hotspot Speed</h3>
+                        <i class="fas fa-tachometer-alt text-2xl text-sky-600"></i>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm font-medium text-sky-600">Download</p>
+                            <div class="flex items-end mt-1">
+                                <p id="download-speed" class="text-3xl font-bold text-sky-900 dark:text-sky-200">0</p>
+                                <span class="ml-2 text-lg text-sky-600 font-semibold">Mbps</span>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-sky-600">Upload</p>
+                            <div class="flex items-end mt-1">
+                                <p id="upload-speed" class="text-3xl font-bold text-sky-900 dark:text-sky-200">0</p>
+                                <span class="ml-2 text-lg text-sky-600 font-semibold">Mbps</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connected Devices List -->
+            <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-transform duration-300 hover:scale-105">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">Connected Devices</h3>
+                    <i class="fas fa-wifi text-2xl text-gray-600 dark:text-gray-300"></i>
+                </div>
+                <ul id="device-list" class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <!-- Devices will be populated by JavaScript -->
+                    <li class="py-3 flex items-center justify-between opacity-50">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-spinner fa-spin text-lg text-gray-400 dark:text-gray-500"></i>
+                            <span class="text-gray-500 dark:text-gray-400">No devices connected</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Hotspot Configuration Modal Dialog -->
+    <div id="config-modal-overlay" class="modal-overlay">
+        <div class="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 p-8 rounded-3xl shadow-2xl w-full max-w-md transform scale-95 transition-transform duration-300">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Edit Hotspot Configuration</h2>
+                <button id="close-modal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-3xl font-light leading-none">
+                    &times;
+                </button>
+            </div>
+            <div class="space-y-4">
+                <!-- SSID Input -->
+                <div>
+                    <label for="modal-ssid-input" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Hotspot Name (SSID)</label>
+                    <input type="text" id="modal-ssid-input" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100" placeholder="e.g., My Personal Hotspot">
+                </div>
+                <!-- Password Input -->
+                <div>
+                    <label for="modal-password-input" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Password</label>
+                    <div class="relative mt-1">
+                        <input type="password" id="modal-password-input" class="block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 pr-10 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100" placeholder="Minimum 8 characters">
+                        <button id="modal-toggle-password" type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 dark:text-gray-500">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- Band Selection -->
+                <div>
+                    <label for="modal-band-select" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Wi-Fi Band</label>
+                    <select id="modal-band-select" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100">
+                        <option value="2.4 GHz">2.4 GHz</option>
+                        <option value="5 GHz">5 GHz</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-4 mt-6">
+                    <button id="cancel-config" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md transition-colors duration-200">
+                        Cancel
+                    </button>
+                    <button id="save-config" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+       // document.addEventListener('DOMContentLoaded', () => {
+            // Get references to all the necessary DOM elements
+            const html = document.documentElement;
+            const body = document.body;
+            const toggleHotspot = document.getElementById('toggle-hotspot');
+            const hotspotStatusText = document.getElementById('hotspot-status');
+            const statusIndicator = document.getElementById('status-indicator');
+            const totalUsageText = document.getElementById('total-usage');
+            const usageProgressBar = document.getElementById('usage-progress');
+            const usageLimitText = document.getElementById('usage-limit-text');
+            const downloadSpeedText = document.getElementById('download-speed');
+            const uploadSpeedText = document.getElementById('upload-speed');
+            const deviceList = document.getElementById('device-list');
+            const hotspotStatusCard = document.getElementById('hotspot-status-card');
+
+            // Config display elements
+            const currentSsidDisplay = document.getElementById('current-ssid');
+            const currentPasswordDisplay = document.getElementById('current-password');
+            const currentBandDisplay = document.getElementById('current-band');
+
+            // Modal elements
+            const openModalButton = document.getElementById('open-config-modal');
+            const modalOverlay = document.getElementById('config-modal-overlay');
+            const closeModalButton = document.getElementById('close-modal');
+            const modalSsidInput = document.getElementById('modal-ssid-input');
+            const modalPasswordInput = document.getElementById('modal-password-input');
+            const modalBandSelect = document.getElementById('modal-band-select');
+            const modalSaveButton = document.getElementById('save-config');
+            const modalCancelButton = document.getElementById('cancel-config');
+            const modalTogglePasswordButton = document.getElementById('modal-toggle-password');
+            
+            // Initial state variables
+            let isHotspotOn = false;
+            let totalUsage = 0.00;
+            const usageLimit = 10.00; // 10 GB limit
+            let devices = [];
+            const deviceUsage = {};
+            const deviceNames = ["Jane's iPhone", "John's Laptop", "Family Tablet", "Work PC", "Smart TV"];
+            const deviceIcons = ["fas fa-mobile-alt", "fas fa-laptop", "fas fa-tablet-alt", "fas fa-desktop", "fas fa-tv"];
+            let hotspotConfig = {
+                ssid: "My Personal Hotspot",
+                password: "password123",
+                band: "2.4 GHz" // New band field
+            };
+
+            // --- Theme Management ---
+            // Function to set the theme based on system preference
+            function setSystemTheme() {
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    html.classList.add('dark');
+                } else {
+                    html.classList.remove('dark');
+                }
+            }
+
+            // Set theme on initial load
+            setSystemTheme();
+
+            // Listen for changes in the system's theme preference
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+                if (event.matches) {
+                    html.classList.add('dark');
+                } else {
+                    html.classList.remove('dark');
+                }
+            });
+
+            // Set initial config display
+            currentSsidDisplay.textContent = hotspotConfig.ssid;
+            currentPasswordDisplay.textContent = hotspotConfig.password.replace(/./g, '*');
+            currentBandDisplay.textContent = hotspotConfig.band;
+
+            // Function to update the UI based on the hotspot status
+            function updateUI() {
+                if (isHotspotOn) {
+                    // Update status card
+                    hotspotStatusCard.classList.remove('bg-slate-50', 'dark:bg-gray-800', 'opacity-50');
+                    hotspotStatusCard.classList.add('bg-emerald-50', 'dark:bg-emerald-900');
+
+                    // Update status text and indicator
+                    hotspotStatusText.textContent = 'On';
+                    hotspotStatusText.classList.remove('text-gray-500', 'dark:text-gray-400');
+                    hotspotStatusText.classList.add('text-emerald-600', 'dark:text-emerald-400');
+                    statusIndicator.classList.remove('bg-gray-400');
+                    statusIndicator.classList.add('bg-emerald-500');
+
+                    // Update toggle switch
+                    toggleHotspot.classList.add('on');
+                    body.classList.remove('hotspot-off');
+                    body.classList.add('hotspot-on');
+
+                    // Start data simulation
+                    startSimulation();
+                } else {
+                    // Update status card
+                    hotspotStatusCard.classList.remove('bg-emerald-50', 'dark:bg-emerald-900');
+                    hotspotStatusCard.classList.add('bg-slate-50', 'dark:bg-gray-800', 'opacity-50');
+
+                    // Update status text and indicator
+                    hotspotStatusText.textContent = 'Off';
+                    hotspotStatusText.classList.remove('text-emerald-600', 'dark:text-emerald-400');
+                    hotspotStatusText.classList.add('text-gray-500', 'dark:text-gray-400');
+                    statusIndicator.classList.remove('bg-emerald-500');
+                    statusIndicator.classList.add('bg-gray-400');
+
+                    // Update toggle switch
+                    toggleHotspot.classList.remove('on');
+                    body.classList.remove('hotspot-on');
+                    body.classList.add('hotspot-off');
+
+                    // Stop data simulation and reset values
+                    stopSimulation();
+                    resetValues();
+                }
+            }
+
+            var hotspot =  fetchStatus();
+
+            // Function to simulate real-time data
+            let simulationInterval;
+            async function startSimulation() {
+                simulationInterval = setInterval(() => {
+                    // Generate random data for speed and usage
+                    var downloadSpeed = (Math.random() * 50 + 10).toFixed(1); // 10 to 60 Mbps
+                    var uploadSpeed = (Math.random() * 20 + 5).toFixed(1); // 5 to 25 Mbps
+                    
+                    // Generate random usage for each connected device
+                    var usageIncrement = (Math.random() * 0.005).toFixed(3); // 0 to 0.005 GB
+                    
+                   /* if (devices.length < 5 && Math.random() > 0.9) {
+                        // Simulate a new device connecting
+                        const newDeviceName = deviceNames[devices.length];
+                        const newDeviceIcon = deviceIcons[devices.length];
+                        devices.push({ name: newDeviceName, icon: newDeviceIcon, isBlocked: false });
+                        deviceUsage[newDeviceName] = 0.00;
+                        renderDevices();
+                    }*/
+                    
+                    let nhotspot =  fetchStatus();
+                    if(nhotspot.download) downloadSpeed = hotspot.download - nhotspot.download;
+                    if(nhotspot.upload) uploadSpeed = hotspot.upload - nhotspot.upload;
+                    hotspot = nhotspot;
+                    devices = [];
+                    if(hotspot.devices){
+                         hotspot.devices.forEach(device => {
+                        // Only increment usage for devices that are not blocked
+                       devices.push({ name: device.name, icon: deviceIcons[0], isBlocked: device.blocked });
+                        deviceUsage[device.name] = device.usage;
+                        renderDevices();
+                    });
+                       
+                    } 
+
+                    totalUsage = hotspot.download + hotspot.upload;
+
+                    devices.forEach(device => {
+                        // Only increment usage for devices that are not blocked
+                        if (!device.isBlocked) {
+                            deviceUsage[device.name] += parseFloat(usageIncrement);
+                            totalUsage += parseFloat(usageIncrement);
+                        }
+                    });
+
+                    // Update UI elements
+                    downloadSpeedText.textContent = downloadSpeed;
+                    uploadSpeedText.textContent = uploadSpeed;
+                    totalUsageText.textContent = totalUsage.toFixed(2);
+                    
+                    const usagePercentage = (totalUsage / usageLimit) * 100;
+                    usageProgressBar.style.width = `${Math.min(usagePercentage, 100)}%`;
+                    usageLimitText.textContent = `${totalUsage.toFixed(2)} GB / ${usageLimit.toFixed(2)} GB`;
+                    
+                    if (totalUsage >= usageLimit) {
+                        // Optionally, add a visual warning
+                        usageLimitText.classList.add('text-red-500', 'font-bold');
+                    } else {
+                        usageLimitText.classList.remove('text-red-500', 'font-bold');
+                    }
+                    
+                    renderDevices();
+
+                }, 1000); // Update every 2 seconds
+            }
+
+
+
+            // Function to stop the simulation
+            function stopSimulation() {
+                clearInterval(simulationInterval);
+            }
+
+        async function fetchStatus() {
+            try {
+                const response = await fetch(`/control`);
+                if (!response.ok) {
+                   return false;// throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                return data || false; // Return 0 if data is null/undefined
+            } catch (error) {
+                console.error(`Error fetching ${path}:`, error);
+                return false;
+            }
+        }
+            
+            // Function to reset all values
+            function resetValues() {
+                totalUsage = 0.00;
+                devices = [];
+                Object.keys(deviceUsage).forEach(key => delete deviceUsage[key]);
+
+                totalUsageText.textContent = '0.00';
+                usageProgressBar.style.width = '0%';
+                usageLimitText.textContent = `0.00 GB / ${usageLimit.toFixed(2)} GB`;
+                downloadSpeedText.textContent = '0';
+                uploadSpeedText.textContent = '0';
+                renderDevices();
+            }
+
+            // Function to render the list of connected devices
+            function renderDevices() {
+                deviceList.innerHTML = '';
+                if (devices.length === 0) {
+                    deviceList.innerHTML = `
+                        <li class="py-3 flex items-center justify-between text-gray-500 dark:text-gray-400 opacity-50">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-wifi text-lg text-gray-400 dark:text-gray-500"></i>
+                                <span>No devices connected</span>
+                            </div>
+                        </li>
+                    `;
+                } else {
+                    devices.forEach(device => {
+                        const usage = deviceUsage[device.name] ? deviceUsage[device.name].toFixed(2) : '0.00';
+                        const listItem = document.createElement('li');
+                        
+                        // Add class for blocked devices
+                        if (device.isBlocked) {
+                            listItem.classList.add('blocked-device');
+                        }
+
+                        listItem.className = `py-3 flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg transition-all duration-200`;
+                        
+                        listItem.innerHTML = `
+                            <div class="flex items-center space-x-3">
+                                <i class="${device.icon} text-xl text-gray-600 dark:text-gray-300"></i>
+                                <span class="font-medium text-gray-700 dark:text-gray-200">${device.name}</span>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="text-sm font-semibold text-gray-600 dark:text-gray-300">${usage} GB</span>
+                                <button onclick="toggleDeviceBlock('${device.name}')" class="text-white p-2 rounded-full transition-colors duration-200 ${device.isBlocked ? 'bg-red-500 hover:bg-red-600' : 'bg-emerald-500 hover:bg-emerald-600'}">
+                                    <i class="fas ${device.isBlocked ? 'fa-check' : 'fa-ban'}"></i>
+                                </button>
+                            </div>
+                        `;
+                        deviceList.appendChild(listItem);
+                    });
+                }
+            }
+
+            // New function to toggle the blocked state of a device
+            function toggleDeviceBlock(deviceName) {
+                const device = devices.find(d => d.name === deviceName);
+                if (device) {
+                    device.isBlocked = !device.isBlocked;
+                    renderDevices();
+                }
+            }
+            
+            // New function to save the hotspot configuration
+            function saveConfiguration() {
+                const newSsid = modalSsidInput.value || "My Personal Hotspot";
+                const newPassword = modalPasswordInput.value || "password123";
+                const newBand = modalBandSelect.value;
+
+                hotspotConfig.ssid = newSsid;
+                hotspotConfig.password = newPassword;
+                hotspotConfig.band = newBand;
+
+                currentSsidDisplay.textContent = newSsid;
+                currentPasswordDisplay.textContent = newPassword.replace(/./g, '*'); // Hide password with asterisks
+                currentBandDisplay.textContent = newBand;
+
+                closeModal();
+            }
+
+            // New function to toggle password visibility
+            function togglePasswordVisibility(event) {
+                const passwordInput = event.currentTarget.previousElementSibling;
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                // Toggle the eye icon
+                event.currentTarget.querySelector('i').classList.toggle('fa-eye');
+                event.currentTarget.querySelector('i').classList.toggle('fa-eye-slash');
+            }
+
+            // Modal control functions
+            function openModal() {
+                // Pre-populate modal inputs with current values
+                modalSsidInput.value = hotspotConfig.ssid;
+                modalPasswordInput.value = hotspotConfig.password;
+                modalBandSelect.value = hotspotConfig.band; // Populate new select field
+                modalOverlay.classList.add('active');
+                document.querySelector('.w-full.max-w-4xl').classList.add('scale-[0.98]');
+            }
+
+            function closeModal() {
+                modalOverlay.classList.remove('active');
+                document.querySelector('.w-full.max-w-4xl').classList.remove('scale-[0.98]');
+            }
+
+            // Expose the function to the global scope so it can be called from onclick attribute
+            window.toggleDeviceBlock = toggleDeviceBlock;
+
+            // Event listener for the hotspot toggle
+            toggleHotspot.addEventListener('click', () => {
+                isHotspotOn = !isHotspotOn;
+                updateUI();
+            });
+
+            // Event listeners for modal
+            openModalButton.addEventListener('click', openModal);
+            closeModalButton.addEventListener('click', closeModal);
+            modalCancelButton.addEventListener('click', closeModal);
+            modalSaveButton.addEventListener('click', saveConfiguration);
+            modalTogglePasswordButton.addEventListener('click', togglePasswordVisibility);
+
+            // Close modal when clicking outside the dialog box
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target.id === 'config-modal-overlay') {
+                    closeModal();
+                }
+            });
+             
+ document.addEventListener('DOMContentLoaded', () => {
+              startSimulation();
+              
+        });
+            // Initial render
+            updateUI();
+      //  });
+    </script>
+</body>
+</html>
