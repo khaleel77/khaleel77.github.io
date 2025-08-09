@@ -264,7 +264,7 @@
             const deviceUsage = {};
             const deviceNames = ["Jane's iPhone", "John's Laptop", "Family Tablet", "Work PC", "Smart TV"];
             const deviceIcons = ["fas fa-mobile-alt", "fas fa-laptop", "fas fa-tablet-alt", "fas fa-desktop", "fas fa-tv"];
-            let hotspotConfig = {
+            var hotspotConfig = {
                 ssid: "My Personal Hotspot",
                 password: "password123",
                 band: "2.4 GHz" // New band field
@@ -317,7 +317,7 @@
                     body.classList.add('hotspot-on');
 
                     // Start data simulation
-                    startSimulation();
+                   
                 } else {
                     // Update status card
                     hotspotStatusCard.classList.remove('bg-emerald-50', 'dark:bg-emerald-900');
@@ -336,7 +336,7 @@
                     body.classList.add('hotspot-off');
 
                     // Stop data simulation and reset values
-                    stopSimulation();
+                   
                     resetValues();
                 }
             }
@@ -426,6 +426,12 @@ xhr.onload = function() {
     console.log(xhr.responseText);
     let nhotspot = JSON.parse(xhr.responseText);
 
+      hotspotConfig = {
+                ssid: nhotspot.ssid,
+                password: nhotspot.pass,
+                band: nhotspot.band // New band field
+            };
+      isHotspotOn = nhotspot.status;
                     if(!hotspot) hotspot = nhotspot;
                     const downloadSpeed = hotspot.download - nhotspot.download;
                    const uploadSpeed = nhotspot.upload - hotspot.upload;
@@ -463,6 +469,7 @@ xhr.onload = function() {
                     }
                     hotspot = nhotspot;
                     renderDevices();
+      updateUI();
   } else {
     console.error("Error:", xhr.statusText);
     return false;
