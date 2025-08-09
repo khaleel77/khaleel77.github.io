@@ -431,11 +431,15 @@ xhr.onload = function() {
                 password: nhotspot.pass,
                 band: nhotspot.band // New band field
             };
+       // Set initial config display
+            currentSsidDisplay.textContent = hotspotConfig.ssid;
+            currentPasswordDisplay.textContent = hotspotConfig.password.replace(/./g, '*');
+            currentBandDisplay.textContent = hotspotConfig.band;
       isHotspotOn = nhotspot.status;
                     if(!hotspot) hotspot = nhotspot;
                     const downloadSpeed = (nhotspot.download - hotspot.download)/1024;
                    const uploadSpeed = (nhotspot.upload - hotspot.upload)/1024;
-                    const totalUsage = (hotspot.download + hotspot.upload)/(1024 * 1024);
+                    const totalUsage = (nhotspot.download + nhotspot.upload)/(1024 * 1024);
                     
                     devices = [];
                     if(hotspot.devices){
