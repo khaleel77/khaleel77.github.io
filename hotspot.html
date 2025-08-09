@@ -341,7 +341,7 @@
                 }
             }
 
-            var hotspot =  fetchStatus();
+            var hotspot;
 
             // Function to simulate real-time data
             let simulationInterval;
@@ -416,18 +416,68 @@
                 clearInterval(simulationInterval);
             }
 
-        async function fetchStatus() {
-            try {
-                const response = await fetch(`/control`);
-                if (!response.ok) {
-                   return false;// throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                return data || false; // Return 0 if data is null/undefined
-            } catch (error) {
-                console.error(`Error fetching ${path}:`, error);
-                return false;
-            }
+       
+         function fetchStatus() {
+            let xhr = new XMLHttpRequest();
+xhr.open("GET", "control", true); // true for asynchronous
+xhr.onload = function() {
+  if (xhr.status === 200) {
+    // Handle the retrieved data
+    console.log(xhr.responseText);
+    let nhotspot = JSON.parse(xhr.responseText);
+
+                    if(!hotspot) hotspot = nhotspot;
+                    const downloadSpeed = hotspot.download - nhotspot.download;
+                   const uploadSpeed = nhotspot.upload - hotspot.upload;
+                    const totalUsage = hotspot.download + hotspot.upload;
+                    
+                    devices = [];
+                    if(hotspot.devices){
+                         hotspot.devices.forEach(device => {
+                        // Only increment usage for devices that are not blocked
+                       devices.push({ name: device.name, icon: deviceIcons[0], isBlocked: device.blocked });
+                        deviceUsage[device.name] = device.usage;
+                        renderDevices();
+                    });
+                       
+                    } 
+
+                   
+
+                    devices.forEach(device => {
+                        // Only increment usage for devices that are not blocked
+                        if (!device.isBlocked) {
+                            deviceUsage[device.name] += parseFloat(usageIncrement);
+                            totalUsage += parseFloat(usageIncrement);
+                        }
+                    });
+
+                    // Update UI elements
+                    downloadSpeedText.textContent = downloadSpeed;
+                    uploadSpeedText.textContent = uploadSpeed;
+                    totalUsageText.textContent = totalUsage.toFixed(2);
+                    
+                    const usagePercentage = (totalUsage / usageLimit) * 100;
+                    usageProgressBar.style.width = `${Math.min(usagePercentage, 100)}%`;
+                    usageLimitText.textContent = `${totalUsage.toFixed(2)} GB / ${usageLimit.toFixed(2)} GB`;
+                    
+                    if (totalUsage >= usageLimit) {
+                        // Optionally, add a visual warning
+                        usageLimitText.classList.add('text-red-500', 'font-bold');
+                    } else {
+                        usageLimitText.classList.remove('text-red-500', 'font-bold');
+                    }
+                    hotspot = nhotspot;
+                    renderDevices();
+  } else {
+    console.error("Error:", xhr.statusText);
+    return false;
+  }
+
+};
+xhr.send();
+setTimeout(function() { fetchStatus(); }, 1000);
+            
         }
             
             // Function to reset all values
@@ -560,7 +610,7 @@
             });
              
  document.addEventListener('DOMContentLoaded', () => {
-              startSimulation();
+             fetchStatus();
               
         });
             // Initial render
