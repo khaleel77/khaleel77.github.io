@@ -446,7 +446,7 @@ xhr.onload = function() {
                          hotspot.devices.forEach(device => {
                         // Only increment usage for devices that are not blocked
                        devices.push({ name: device.name, icon: deviceIcons[0], isBlocked: device.blocked });
-                        deviceUsage[device.name] = device.usage;
+                        deviceUsage[device.name] = (device.usage/(1024 * 1024)).toFixed(2);
                         renderDevices();
                     });
                        
@@ -457,8 +457,8 @@ xhr.onload = function() {
                    
 
                     // Update UI elements
-                    downloadSpeedText.textContent = downloadSpeed;
-                    uploadSpeedText.textContent = uploadSpeed;
+                    downloadSpeedText.textContent = downloadSpeed.toFixed(0);
+                    uploadSpeedText.textContent = uploadSpeed.toFixed(0);
                     totalUsageText.textContent = totalUsage.toFixed(2);
                     
                     const usagePercentage = (totalUsage / usageLimit) * 100;
