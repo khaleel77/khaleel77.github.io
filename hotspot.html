@@ -446,7 +446,8 @@ xhr.onload = function() {
                          hotspot.devices.forEach(device => {
                         // Only increment usage for devices that are not blocked
                        devices.push({ name: device.name, icon: deviceIcons[0], isBlocked: device.blocked });
-                        deviceUsage[device.name] = (device.usage/(1024 * 1024)).toFixed(2);
+                             let usage = device.usage/(1024 * 1024);
+                        deviceUsage[device.name] = usage.toFixed(2);
                         renderDevices();
                     });
                        
