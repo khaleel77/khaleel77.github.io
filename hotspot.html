@@ -447,7 +447,7 @@ xhr.onload = function() {
                         // Only increment usage for devices that are not blocked
                        devices.push({ name: device.name, icon: deviceIcons[0], isBlocked: device.blocked });
                              let usage = device.usage/(1024 * 1024);
-                        deviceUsage[device.name] = usage.toFixed(2);
+                        deviceUsage[device.name] = usage;
                         renderDevices();
                     });
                        
