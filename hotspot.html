@@ -444,13 +444,7 @@ xhr.onload = function() {
 
                    
 
-                    devices.forEach(device => {
-                        // Only increment usage for devices that are not blocked
-                        if (!device.isBlocked) {
-                            deviceUsage[device.name] += parseFloat(usageIncrement);
-                            totalUsage += parseFloat(usageIncrement);
-                        }
-                    });
+                   
 
                     // Update UI elements
                     downloadSpeedText.textContent = downloadSpeed;
