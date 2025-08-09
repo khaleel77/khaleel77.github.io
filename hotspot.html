@@ -433,9 +433,9 @@ xhr.onload = function() {
             };
       isHotspotOn = nhotspot.status;
                     if(!hotspot) hotspot = nhotspot;
-                    const downloadSpeed = hotspot.download - nhotspot.download;
-                   const uploadSpeed = nhotspot.upload - hotspot.upload;
-                    const totalUsage = hotspot.download + hotspot.upload;
+                    const downloadSpeed = (nhotspot.download - hotspot.download)/1024;
+                   const uploadSpeed = (nhotspot.upload - hotspot.upload)/1024;
+                    const totalUsage = (hotspot.download + hotspot.upload)/(1024 * 1024);
                     
                     devices = [];
                     if(hotspot.devices){
