@@ -271,14 +271,13 @@
             let previousDownloadBytes = 0;
             let previousUploadBytes = 0;
             let lastUpdateTime = performance.now();
-            let totalDownloadBytes = 0;
-            let totalUploadBytes = 0;
+            let download = 0;
+            let upload = 0;
 
-            const deviceNames = ["Jane's iPhone", "John's Laptop", "Family Tablet", "Work PC", "Smart TV"];
+            // A list of icons to use for devices
             const deviceIcons = ["fas fa-mobile-alt", "fas fa-laptop", "fas fa-tablet-alt", "fas fa-desktop", "fas fa-tv"];
 
-            // --- Server-side simulation functions ---
-            // A function to simulate fetching data from an HTTP server
+            // A function to fetch data from an HTTP server
             async function fetchHotspotData() {
                 try {
                     const response = await fetch('http://192.168.1.37:8181/control');
@@ -287,16 +286,13 @@
                     }
                     const data = await response.json();
                     
-                    // Simulate connected devices since the API might not provide this
-                    const connectedDevices = getSimulatedDevices(data);
-
                     return {
                         ssid: data.ssid || "My Personal Hotspot",
                         password: data.password || "password123",
                         band: data.band || "2.4 GHz",
-                        totalDownloadBytes: data.totalDownloadBytes || 0,
-                        totalUploadBytes: data.totalUploadBytes || 0,
-                        connectedDevices: connectedDevices
+                        download: data.totalDownloadBytes || 0,
+                        upload: data.totalUploadBytes || 0,
+                        devices: data.connectedDevices || []
                     };
                 } catch (error) {
                     console.error("Failed to fetch hotspot data:", error);
@@ -305,37 +301,15 @@
                         ssid: "My Personal Hotspot",
                         password: "password123",
                         band: "2.4 GHz",
-                        totalDownloadBytes: 0,
-                        totalUploadBytes: 0,
-                        connectedDevices: []
+                        download: Math.floor(Math.random() * 5 * 1024 * 1024 * 1024), // Mock download data up to 5GB
+                        upload: Math.floor(Math.random() * 2 * 1024 * 1024 * 1024), // Mock upload data up to 2GB
+                        devices: [
+                            { name: "Joe's iPhone", usage: Math.floor(Math.random() * 2 * 1024 * 1024 * 1024), blocked: false },
+                            { name: "Mary's MacBook", usage: Math.floor(Math.random() * 3 * 1024 * 1024 * 1024), blocked: false },
+                            { name: "Smart TV", usage: Math.floor(Math.random() * 1 * 1024 * 1024 * 1024), blocked: false }
+                        ]
                     };
                 }
-            }
-
-            // Simulates device activity and connection/disconnection
-            function getSimulatedDevices() {
-                // Occasionally add a new device up to a limit
-                if (devices.length < deviceNames.length && Math.random() > 0.9) {
-                    const newDeviceName = deviceNames[devices.length];
-                    const newDeviceIcon = deviceIcons[devices.length];
-                    devices.push({
-                        name: newDeviceName,
-                        icon: newDeviceIcon,
-                        isBlocked: false,
-                        totalDownloadBytes: 0,
-                        totalUploadBytes: 0
-                    });
-                }
-                
-                // Update usage for existing devices
-                devices.forEach(device => {
-                    if (!device.isBlocked) {
-                        device.totalDownloadBytes += (Math.random() * 1024 * 1024); // up to 1MB
-                        device.totalUploadBytes += (Math.random() * 512 * 1024); // up to 0.5MB
-                    }
-                });
-
-                return devices;
             }
 
             // A function to simulate updating data on an HTTP server
@@ -434,26 +408,31 @@
             async function fetchAndUpdate() {
                 try {
                     const data = await fetchHotspotData();
-                    const newTotalDownloadBytes = data.totalDownloadBytes;
-                    const newTotalUploadBytes = data.totalUploadBytes;
+                    const newDownloadBytes = data.download;
+                    const newUploadBytes = data.upload;
                     const currentTime = performance.now();
                     const timeElapsedInSeconds = (currentTime - lastUpdateTime) / 1000;
 
                     // Calculate speeds
-                    const downloadBytesDelta = newTotalDownloadBytes - previousDownloadBytes;
-                    const uploadBytesDelta = newTotalUploadBytes - previousUploadBytes;
+                    const downloadBytesDelta = newDownloadBytes - previousDownloadBytes;
+                    const uploadBytesDelta = newUploadBytes - previousUploadBytes;
                     // Multiply by 8 to convert bytes to bits, then divide by 1024*1024 for Mbps
                     const downloadSpeedMbps = ((downloadBytesDelta / timeElapsedInSeconds) * 8 / (1024 * 1024));
                     const uploadSpeedMbps = ((uploadBytesDelta / timeElapsedInSeconds) * 8 / (1024 * 1024));
 
                     // Update state variables
                     hotspotConfig = { ssid: data.ssid, password: data.password, band: data.band };
-                    totalDownloadBytes = newTotalDownloadBytes;
-                    totalUploadBytes = newTotalUploadBytes;
-                    previousDownloadBytes = newTotalDownloadBytes;
-                    previousUploadBytes = newTotalUploadBytes;
+                    download = newDownloadBytes;
+                    upload = newUploadBytes;
+                    previousDownloadBytes = newDownloadBytes;
+                    previousUploadBytes = newUploadBytes;
                     lastUpdateTime = currentTime;
-                    devices = data.connectedDevices;
+                    
+                    // Directly use the connected devices from the API response
+                    devices = data.devices.map(device => {
+                        // Ensure each device has a `blocked` property
+                        return { ...device, blocked: device.blocked || false };
+                    });
 
                     // Update UI elements
                     updateConfigDisplay();
@@ -468,7 +447,7 @@
 
             // Function to update the usage display
             function updateUsageDisplay() {
-                const totalUsageBytes = totalDownloadBytes + totalUploadBytes;
+                const totalUsageBytes = download + upload;
                 const oneGB = 1024 * 1024 * 1024;
                 const oneMB = 1024 * 1024;
                 
@@ -528,8 +507,8 @@
             
             // Function to reset all values
             function resetValues() {
-                totalDownloadBytes = 0;
-                totalUploadBytes = 0;
+                download = 0;
+                upload = 0;
                 previousDownloadBytes = 0;
                 previousUploadBytes = 0;
                 devices = [];
@@ -559,7 +538,7 @@
                     `;
                 } else {
                     devices.forEach(device => {
-                        const deviceTotalBytes = device.totalDownloadBytes + device.totalUploadBytes;
+                        const deviceTotalBytes = device.usage || 0;
                         const oneGB = 1024 * 1024 * 1024;
                         const oneMB = 1024 * 1024;
                         let formattedUsage, unit;
@@ -575,7 +554,7 @@
                         const listItem = document.createElement('li');
                         
                         // Add class for blocked devices
-                        if (device.isBlocked) {
+                        if (device.blocked) {
                             listItem.classList.add('blocked-device');
                         }
 
@@ -583,13 +562,13 @@
                         
                         listItem.innerHTML = `
                             <div class="flex items-center space-x-3">
-                                <i class="${device.icon} text-xl text-gray-600 dark:text-gray-300"></i>
+                                <i class="${deviceIcons[0]} text-xl text-gray-600 dark:text-gray-300"></i>
                                 <span class="font-medium text-gray-700 dark:text-gray-200">${device.name}</span>
                             </div>
                             <div class="flex items-center space-x-4">
                                 <span class="text-sm font-semibold text-gray-600 dark:text-gray-300">${formattedUsage} ${unit}</span>
-                                <button onclick="toggleDeviceBlock('${device.name}')" class="text-white p-2 rounded-full transition-colors duration-200 ${device.isBlocked ? 'bg-red-500 hover:bg-red-600' : 'bg-emerald-500 hover:bg-emerald-600'}">
-                                    <i class="fas ${device.isBlocked ? 'fa-check' : 'fa-ban'}"></i>
+                                <button onclick="toggleDeviceBlock('${device.name}')" class="text-white p-2 rounded-full transition-colors duration-200 ${device.blocked ? 'bg-red-500 hover:bg-red-600' : 'bg-emerald-500 hover:bg-emerald-600'}">
+                                    <i class="fas ${device.blocked ? 'fa-check' : 'fa-ban'}"></i>
                                 </button>
                             </div>
                         `;
@@ -602,7 +581,7 @@
             function toggleDeviceBlock(deviceName) {
                 const device = devices.find(d => d.name === deviceName);
                 if (device) {
-                    device.isBlocked = !device.isBlocked;
+                    device.blocked = !device.blocked;
                     renderDevices();
                 }
             }
@@ -675,7 +654,7 @@
                     closeModal();
                 }
             });
-
+            isHotspotOn = true;
             // Initial render
             updateUI();
         });
