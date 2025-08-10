@@ -126,7 +126,7 @@
                     <p class="text-sm font-medium text-indigo-600">Total Data Used</p>
                     <div class="flex items-end mt-1">
                         <p id="total-usage" class="text-4xl font-bold text-indigo-900 dark:text-indigo-200">0.00</p>
-                        <span class="ml-2 text-2xl text-indigo-600 font-semibold">GB</span>
+                        <span id="total-usage-unit" class="ml-2 text-2xl text-indigo-600 font-semibold">GB</span>
                     </div>
                     <div class="w-full bg-indigo-200 dark:bg-indigo-700 rounded-full h-2.5 mt-4">
                         <div id="usage-progress" class="bg-indigo-500 h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
@@ -145,14 +145,14 @@
                             <p class="text-sm font-medium text-sky-600">Download</p>
                             <div class="flex items-end mt-1">
                                 <p id="download-speed" class="text-3xl font-bold text-sky-900 dark:text-sky-200">0</p>
-                                <span class="ml-2 text-lg text-sky-600 font-semibold">Mbps</span>
+                                <span id="download-speed-unit" class="ml-2 text-lg text-sky-600 font-semibold">Mbps</span>
                             </div>
                         </div>
                         <div>
                             <p class="text-sm font-medium text-sky-600">Upload</p>
                             <div class="flex items-end mt-1">
                                 <p id="upload-speed" class="text-3xl font-bold text-sky-900 dark:text-sky-200">0</p>
-                                <span class="ml-2 text-lg text-sky-600 font-semibold">Mbps</span>
+                                <span id="upload-speed-unit" class="ml-2 text-lg text-sky-600 font-semibold">Mbps</span>
                             </div>
                         </div>
                     </div>
@@ -225,7 +225,7 @@
     </div>
 
     <script>
-       // document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
             // Get references to all the necessary DOM elements
             const html = document.documentElement;
             const body = document.body;
@@ -233,10 +233,13 @@
             const hotspotStatusText = document.getElementById('hotspot-status');
             const statusIndicator = document.getElementById('status-indicator');
             const totalUsageText = document.getElementById('total-usage');
+            const totalUsageUnit = document.getElementById('total-usage-unit');
             const usageProgressBar = document.getElementById('usage-progress');
             const usageLimitText = document.getElementById('usage-limit-text');
             const downloadSpeedText = document.getElementById('download-speed');
+            const downloadSpeedUnit = document.getElementById('download-speed-unit');
             const uploadSpeedText = document.getElementById('upload-speed');
+            const uploadSpeedUnit = document.getElementById('upload-speed-unit');
             const deviceList = document.getElementById('device-list');
             const hotspotStatusCard = document.getElementById('hotspot-status-card');
 
@@ -258,17 +261,93 @@
             
             // Initial state variables
             let isHotspotOn = false;
-            let totalUsage = 0.00;
-            const usageLimit = 10.00; // 10 GB limit
+            const usageLimitBytes = 10 * 1024 * 1024 * 1024; // 10 GB limit in bytes
             let devices = [];
-            const deviceUsage = {};
+            let hotspotConfig = {
+                ssid: "",
+                password: "",
+                band: ""
+            };
+            let previousDownloadBytes = 0;
+            let previousUploadBytes = 0;
+            let lastUpdateTime = performance.now();
+            let totalDownloadBytes = 0;
+            let totalUploadBytes = 0;
+
             const deviceNames = ["Jane's iPhone", "John's Laptop", "Family Tablet", "Work PC", "Smart TV"];
             const deviceIcons = ["fas fa-mobile-alt", "fas fa-laptop", "fas fa-tablet-alt", "fas fa-desktop", "fas fa-tv"];
-            var hotspotConfig = {
-                ssid: "My Personal Hotspot",
-                password: "password123",
-                band: "2.4 GHz" // New band field
-            };
+
+            // --- Server-side simulation functions ---
+            // A function to simulate fetching data from an HTTP server
+            async function fetchHotspotData() {
+                try {
+                    const response = await fetch('http://192.168.1.37:8181/control');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    
+                    // Simulate connected devices since the API might not provide this
+                    const connectedDevices = getSimulatedDevices(data);
+
+                    return {
+                        ssid: data.ssid || "My Personal Hotspot",
+                        password: data.password || "password123",
+                        band: data.band || "2.4 GHz",
+                        totalDownloadBytes: data.totalDownloadBytes || 0,
+                        totalUploadBytes: data.totalUploadBytes || 0,
+                        connectedDevices: connectedDevices
+                    };
+                } catch (error) {
+                    console.error("Failed to fetch hotspot data:", error);
+                    // Return a default object to prevent the app from crashing
+                    return {
+                        ssid: "My Personal Hotspot",
+                        password: "password123",
+                        band: "2.4 GHz",
+                        totalDownloadBytes: 0,
+                        totalUploadBytes: 0,
+                        connectedDevices: []
+                    };
+                }
+            }
+
+            // Simulates device activity and connection/disconnection
+            function getSimulatedDevices() {
+                // Occasionally add a new device up to a limit
+                if (devices.length < deviceNames.length && Math.random() > 0.9) {
+                    const newDeviceName = deviceNames[devices.length];
+                    const newDeviceIcon = deviceIcons[devices.length];
+                    devices.push({
+                        name: newDeviceName,
+                        icon: newDeviceIcon,
+                        isBlocked: false,
+                        totalDownloadBytes: 0,
+                        totalUploadBytes: 0
+                    });
+                }
+                
+                // Update usage for existing devices
+                devices.forEach(device => {
+                    if (!device.isBlocked) {
+                        device.totalDownloadBytes += (Math.random() * 1024 * 1024); // up to 1MB
+                        device.totalUploadBytes += (Math.random() * 512 * 1024); // up to 0.5MB
+                    }
+                });
+
+                return devices;
+            }
+
+            // A function to simulate updating data on an HTTP server
+            async function updateHotspotConfig(newConfig) {
+                // Simulate a network request with a delay
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        console.log("Configuration updated on server:", newConfig);
+                        resolve({ success: true, message: "Configuration saved successfully!" });
+                    }, 1000); // 1 second delay
+                });
+            }
 
             // --- Theme Management ---
             // Function to set the theme based on system preference
@@ -292,10 +371,12 @@
                 }
             });
 
-            // Set initial config display
-            currentSsidDisplay.textContent = hotspotConfig.ssid;
-            currentPasswordDisplay.textContent = hotspotConfig.password.replace(/./g, '*');
-            currentBandDisplay.textContent = hotspotConfig.band;
+            // Function to update the UI with fetched config
+            function updateConfigDisplay() {
+                currentSsidDisplay.textContent = hotspotConfig.ssid;
+                currentPasswordDisplay.textContent = hotspotConfig.password.replace(/./g, '*');
+                currentBandDisplay.textContent = hotspotConfig.band;
+            }
 
             // Function to update the UI based on the hotspot status
             function updateUI() {
@@ -316,8 +397,8 @@
                     body.classList.remove('hotspot-off');
                     body.classList.add('hotspot-on');
 
-                    // Start data simulation
-                   
+                    // Start data fetch and speed calculation loop
+                    startSimulation();
                 } else {
                     // Update status card
                     hotspotStatusCard.classList.remove('bg-emerald-50', 'dark:bg-emerald-900');
@@ -336,167 +417,131 @@
                     body.classList.add('hotspot-off');
 
                     // Stop data simulation and reset values
-                   
+                    stopSimulation();
                     resetValues();
                 }
             }
 
-            var hotspot;
-
-            // Function to simulate real-time data
+            // Function to start the data fetch and speed calculation loop
             let simulationInterval;
-            async function startSimulation() {
-                simulationInterval = setInterval(() => {
-                    // Generate random data for speed and usage
-                    var downloadSpeed = (Math.random() * 50 + 10).toFixed(1); // 10 to 60 Mbps
-                    var uploadSpeed = (Math.random() * 20 + 5).toFixed(1); // 5 to 25 Mbps
-                    
-                    // Generate random usage for each connected device
-                    var usageIncrement = (Math.random() * 0.005).toFixed(3); // 0 to 0.005 GB
-                    
-                   /* if (devices.length < 5 && Math.random() > 0.9) {
-                        // Simulate a new device connecting
-                        const newDeviceName = deviceNames[devices.length];
-                        const newDeviceIcon = deviceIcons[devices.length];
-                        devices.push({ name: newDeviceName, icon: newDeviceIcon, isBlocked: false });
-                        deviceUsage[newDeviceName] = 0.00;
-                        renderDevices();
-                    }*/
-                    
-                    let nhotspot =  fetchStatus();
-                    if(nhotspot.download) downloadSpeed = hotspot.download - nhotspot.download;
-                    if(nhotspot.upload) uploadSpeed = hotspot.upload - nhotspot.upload;
-                    hotspot = nhotspot;
-                    devices = [];
-                    if(hotspot.devices){
-                         hotspot.devices.forEach(device => {
-                        // Only increment usage for devices that are not blocked
-                       devices.push({ name: device.name, icon: deviceIcons[0], isBlocked: device.blocked });
-                        deviceUsage[device.name] = device.usage;
-                        renderDevices();
-                    });
-                       
-                    } 
-
-                    totalUsage = hotspot.download + hotspot.upload;
-
-                    devices.forEach(device => {
-                        // Only increment usage for devices that are not blocked
-                        if (!device.isBlocked) {
-                            deviceUsage[device.name] += parseFloat(usageIncrement);
-                            totalUsage += parseFloat(usageIncrement);
-                        }
-                    });
-
-                    // Update UI elements
-                    downloadSpeedText.textContent = downloadSpeed;
-                    uploadSpeedText.textContent = uploadSpeed;
-                    totalUsageText.textContent = totalUsage.toFixed(2);
-                    
-                    const usagePercentage = (totalUsage / usageLimit) * 100;
-                    usageProgressBar.style.width = `${Math.min(usagePercentage, 100)}%`;
-                    usageLimitText.textContent = `${totalUsage.toFixed(2)} GB / ${usageLimit.toFixed(2)} GB`;
-                    
-                    if (totalUsage >= usageLimit) {
-                        // Optionally, add a visual warning
-                        usageLimitText.classList.add('text-red-500', 'font-bold');
-                    } else {
-                        usageLimitText.classList.remove('text-red-500', 'font-bold');
-                    }
-                    
-                    renderDevices();
-
-                }, 1000); // Update every 2 seconds
+            function startSimulation() {
+                // Fetch initial data immediately and then start the interval
+                fetchAndUpdate();
+                simulationInterval = setInterval(fetchAndUpdate, 1000); // Update every 1 second
             }
 
+            // Main function to fetch data, calculate speeds, and update UI
+            async function fetchAndUpdate() {
+                try {
+                    const data = await fetchHotspotData();
+                    const newTotalDownloadBytes = data.totalDownloadBytes;
+                    const newTotalUploadBytes = data.totalUploadBytes;
+                    const currentTime = performance.now();
+                    const timeElapsedInSeconds = (currentTime - lastUpdateTime) / 1000;
 
+                    // Calculate speeds
+                    const downloadBytesDelta = newTotalDownloadBytes - previousDownloadBytes;
+                    const uploadBytesDelta = newTotalUploadBytes - previousUploadBytes;
+                    // Multiply by 8 to convert bytes to bits, then divide by 1024*1024 for Mbps
+                    const downloadSpeedMbps = ((downloadBytesDelta / timeElapsedInSeconds) * 8 / (1024 * 1024));
+                    const uploadSpeedMbps = ((uploadBytesDelta / timeElapsedInSeconds) * 8 / (1024 * 1024));
+
+                    // Update state variables
+                    hotspotConfig = { ssid: data.ssid, password: data.password, band: data.band };
+                    totalDownloadBytes = newTotalDownloadBytes;
+                    totalUploadBytes = newTotalUploadBytes;
+                    previousDownloadBytes = newTotalDownloadBytes;
+                    previousUploadBytes = newTotalUploadBytes;
+                    lastUpdateTime = currentTime;
+                    devices = data.connectedDevices;
+
+                    // Update UI elements
+                    updateConfigDisplay();
+                    updateUsageDisplay();
+                    updateSpeedDisplay(downloadSpeedMbps, uploadSpeedMbps);
+                    renderDevices();
+
+                } catch (error) {
+                    console.error("Failed to fetch data:", error);
+                }
+            }
+
+            // Function to update the usage display
+            function updateUsageDisplay() {
+                const totalUsageBytes = totalDownloadBytes + totalUploadBytes;
+                const oneGB = 1024 * 1024 * 1024;
+                const oneMB = 1024 * 1024;
+                
+                if (totalUsageBytes < oneGB) {
+                    const usageMB = totalUsageBytes / oneMB;
+                    totalUsageText.textContent = usageMB.toFixed(2);
+                    totalUsageUnit.textContent = 'MB';
+                } else {
+                    const usageGB = totalUsageBytes / oneGB;
+                    totalUsageText.textContent = usageGB.toFixed(2);
+                    totalUsageUnit.textContent = 'GB';
+                }
+                
+                const usagePercentage = (totalUsageBytes / usageLimitBytes) * 100;
+                usageProgressBar.style.width = `${Math.min(usagePercentage, 100)}%`;
+
+                const totalUsageGB = totalUsageBytes / oneGB;
+                const usageLimitGB = usageLimitBytes / oneGB;
+                
+                usageLimitText.textContent = `${totalUsageGB.toFixed(2)} GB / ${usageLimitGB.toFixed(2)} GB`;
+                
+                if (totalUsageBytes >= usageLimitBytes) {
+                    // Optionally, add a visual warning
+                    usageLimitText.classList.add('text-red-500', 'font-bold');
+                } else {
+                    usageLimitText.classList.remove('text-red-500', 'font-bold');
+                }
+            }
+            
+            // Function to update the speed display
+            function updateSpeedDisplay(downloadSpeedMbps, uploadSpeedMbps) {
+                // Download speed
+                if (downloadSpeedMbps < 1) {
+                    const downloadSpeedKbps = (downloadSpeedMbps * 1024);
+                    downloadSpeedText.textContent = downloadSpeedKbps.toFixed(1);
+                    downloadSpeedUnit.textContent = 'Kbps';
+                } else {
+                    downloadSpeedText.textContent = downloadSpeedMbps.toFixed(1);
+                    downloadSpeedUnit.textContent = 'Mbps';
+                }
+
+                // Upload speed
+                if (uploadSpeedMbps < 1) {
+                    const uploadSpeedKbps = (uploadSpeedMbps * 1024);
+                    uploadSpeedText.textContent = uploadSpeedKbps.toFixed(1);
+                    uploadSpeedUnit.textContent = 'Kbps';
+                } else {
+                    uploadSpeedText.textContent = uploadSpeedMbps.toFixed(1);
+                    uploadSpeedUnit.textContent = 'Mbps';
+                }
+            }
 
             // Function to stop the simulation
             function stopSimulation() {
                 clearInterval(simulationInterval);
             }
-
-       
-         function fetchStatus() {
-            let xhr = new XMLHttpRequest();
-xhr.open("GET", "control", true); // true for asynchronous
-xhr.onload = function() {
-  if (xhr.status === 200) {
-    // Handle the retrieved data
-    console.log(xhr.responseText);
-    let nhotspot = JSON.parse(xhr.responseText);
-
-      hotspotConfig = {
-                ssid: nhotspot.ssid,
-                password: nhotspot.pass,
-                band: nhotspot.band // New band field
-            };
-       // Set initial config display
-            currentSsidDisplay.textContent = hotspotConfig.ssid;
-            currentPasswordDisplay.textContent = hotspotConfig.password.replace(/./g, '*');
-            currentBandDisplay.textContent = hotspotConfig.band;
-      isHotspotOn = nhotspot.status;
-                    if(!hotspot) hotspot = nhotspot;
-                    const downloadSpeed = (nhotspot.download - hotspot.download)/1024;
-                   const uploadSpeed = (nhotspot.upload - hotspot.upload)/1024;
-                    const totalUsage = (nhotspot.download + nhotspot.upload)/(1024 * 1024);
-                    
-                    devices = [];
-                    if(hotspot.devices){
-                         hotspot.devices.forEach(device => {
-                        // Only increment usage for devices that are not blocked
-                       devices.push({ name: device.name, icon: deviceIcons[0], isBlocked: device.blocked });
-                             let usage = device.usage/(1024 * 1024);
-                        deviceUsage[device.name] = usage;
-                        renderDevices();
-                    });
-                       
-                    } 
-
-                   
-
-                   
-
-                    // Update UI elements
-                    downloadSpeedText.textContent = downloadSpeed.toFixed(0);
-                    uploadSpeedText.textContent = uploadSpeed.toFixed(0);
-                    totalUsageText.textContent = totalUsage.toFixed(2);
-                    
-                    const usagePercentage = (totalUsage / usageLimit) * 100;
-                    usageProgressBar.style.width = `${Math.min(usagePercentage, 100)}%`;
-                    usageLimitText.textContent = `${totalUsage.toFixed(2)} GB / ${usageLimit.toFixed(2)} GB`;
-                    
-                    if (totalUsage >= usageLimit) {
-                        // Optionally, add a visual warning
-                        usageLimitText.classList.add('text-red-500', 'font-bold');
-                    } else {
-                        usageLimitText.classList.remove('text-red-500', 'font-bold');
-                    }
-                    hotspot = nhotspot;
-                    renderDevices();
-      updateUI();
-  } else {
-    console.error("Error:", xhr.statusText);
-    return false;
-  }
-
-};
-xhr.send();
-setTimeout(function() { fetchStatus(); }, 1000);
-            
-        }
             
             // Function to reset all values
             function resetValues() {
-                totalUsage = 0.00;
+                totalDownloadBytes = 0;
+                totalUploadBytes = 0;
+                previousDownloadBytes = 0;
+                previousUploadBytes = 0;
                 devices = [];
-                Object.keys(deviceUsage).forEach(key => delete deviceUsage[key]);
 
                 totalUsageText.textContent = '0.00';
+                totalUsageUnit.textContent = 'MB';
                 usageProgressBar.style.width = '0%';
-                usageLimitText.textContent = `0.00 GB / ${usageLimit.toFixed(2)} GB`;
+                usageLimitText.textContent = `0.00 GB / 10.00 GB`;
                 downloadSpeedText.textContent = '0';
+                downloadSpeedUnit.textContent = 'Mbps';
                 uploadSpeedText.textContent = '0';
+                uploadSpeedUnit.textContent = 'Mbps';
                 renderDevices();
             }
 
@@ -514,7 +559,19 @@ setTimeout(function() { fetchStatus(); }, 1000);
                     `;
                 } else {
                     devices.forEach(device => {
-                        const usage = deviceUsage[device.name] ? deviceUsage[device.name].toFixed(2) : '0.00';
+                        const deviceTotalBytes = device.totalDownloadBytes + device.totalUploadBytes;
+                        const oneGB = 1024 * 1024 * 1024;
+                        const oneMB = 1024 * 1024;
+                        let formattedUsage, unit;
+                        
+                        if (deviceTotalBytes < oneGB) {
+                            formattedUsage = (deviceTotalBytes / oneMB).toFixed(2);
+                            unit = 'MB';
+                        } else {
+                            formattedUsage = (deviceTotalBytes / oneGB).toFixed(2);
+                            unit = 'GB';
+                        }
+                        
                         const listItem = document.createElement('li');
                         
                         // Add class for blocked devices
@@ -530,7 +587,7 @@ setTimeout(function() { fetchStatus(); }, 1000);
                                 <span class="font-medium text-gray-700 dark:text-gray-200">${device.name}</span>
                             </div>
                             <div class="flex items-center space-x-4">
-                                <span class="text-sm font-semibold text-gray-600 dark:text-gray-300">${usage} GB</span>
+                                <span class="text-sm font-semibold text-gray-600 dark:text-gray-300">${formattedUsage} ${unit}</span>
                                 <button onclick="toggleDeviceBlock('${device.name}')" class="text-white p-2 rounded-full transition-colors duration-200 ${device.isBlocked ? 'bg-red-500 hover:bg-red-600' : 'bg-emerald-500 hover:bg-emerald-600'}">
                                     <i class="fas ${device.isBlocked ? 'fa-check' : 'fa-ban'}"></i>
                                 </button>
@@ -551,7 +608,7 @@ setTimeout(function() { fetchStatus(); }, 1000);
             }
             
             // New function to save the hotspot configuration
-            function saveConfiguration() {
+            async function saveConfiguration() {
                 const newSsid = modalSsidInput.value || "My Personal Hotspot";
                 const newPassword = modalPasswordInput.value || "password123";
                 const newBand = modalBandSelect.value;
@@ -560,11 +617,15 @@ setTimeout(function() { fetchStatus(); }, 1000);
                 hotspotConfig.password = newPassword;
                 hotspotConfig.band = newBand;
 
-                currentSsidDisplay.textContent = newSsid;
-                currentPasswordDisplay.textContent = newPassword.replace(/./g, '*'); // Hide password with asterisks
-                currentBandDisplay.textContent = newBand;
-
-                closeModal();
+                // Simulate sending data to the server
+                const response = await updateHotspotConfig(hotspotConfig);
+                if (response.success) {
+                    // Update UI only after successful server response
+                    updateConfigDisplay();
+                    closeModal();
+                } else {
+                    console.error("Failed to save configuration.");
+                }
             }
 
             // New function to toggle password visibility
@@ -614,14 +675,10 @@ setTimeout(function() { fetchStatus(); }, 1000);
                     closeModal();
                 }
             });
-             
- document.addEventListener('DOMContentLoaded', () => {
-             fetchStatus();
-              
-        });
+
             // Initial render
             updateUI();
-      //  });
+        });
     </script>
 </body>
 </html>
