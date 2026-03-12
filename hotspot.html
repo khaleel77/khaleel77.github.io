@@ -280,7 +280,7 @@
             // A function to fetch data from an HTTP server
             async function fetchHotspotData() {
                 try {
-                    const response = await fetch('http://192.168.1.37:8181/control');
+                    const response = await fetch(`http://${window.location.host}/control`);
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
