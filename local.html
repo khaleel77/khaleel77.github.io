@@ -1,0 +1,521 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+<head>
+<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Register in YemenFi console">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+
+     <link rel="icon" type="image/png" href="favicon.ico" />
+  
+
+   <meta http-equiv=X-UA-Compatible content="IE=edge"> 
+   <meta name=description content="Create rich link for social media"> 
+   <meta name=viewport content="width=device-width,initial-scale=1"> 
+   <meta property="og:title" content="Tetherg - Link preview generator" >
+  <meta property="og:url" content="https://tetherg.com" >
+        <meta property="og:image" content="https://tetherg-app.web.app/icon512.png" >
+        <meta property="og:image:width" content="1200" >
+        <meta property="og:image:height" content="630" >        
+        <meta property="og:image:alt" content="Create rich link for social media" >
+        <meta property="og:description" content="Create, Edit, Hide link preview"> 
+        <meta property="og:site_name" content="https://Tetherg.com" >
+
+        <meta property="twitter:card" content=" summary_large_image" >
+        <meta property="twitter:title" content="Tetherg - Link preview generator" >
+        <meta property="twitter:url" content="https://tetherg.com" >
+        <meta property="twitter:image" content="https://tetherg-app.web.app/icon512.png" >
+        <meta property="twitter:site" content="https://Tetherg.com" >
+        <meta property="twitter:description" content="Create rich link for social media"> 
+        <title>Notification</title>                 
+
+    
+    
+    <!-- Disable tap highlight on IE -->
+  <meta name="msapplication-tap-highlight" content="no">
+
+  <!-- Web Application Manifest -->
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Add to home screen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Tetherg">
+  <meta name="theme-color" content="#FFF">
+  <link rel="icon" sizes="192x192" href="/images/icon-192x192.png">
+  <link rel="icon" sizes="128x128" href="/images/icon-128x128.png">
+
+  <!-- Add to home screen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Tetherg">
+  <link rel="apple-touch-icon" href="/images/icon-180x180.png">
+  <link rel="apple-touch-icon-precomposed" href="/images/icon-180x180.png">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#FFF">
+
+  <!-- Tile icon for Win8 -->
+  <meta name="msapplication-TileImage" content="/images/icon-144x144.png">
+  <meta name="msapplication-TileColor" content="#3372DF">
+  <meta name="msapplication-navbutton-color" content="#FFF">
+    
+    <!-- Material Design Lite CSS -->
+    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+   
+   
+    <!-- Material Design icon font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    
+    
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+
+
+<link rel="stylesheet" href="app.css">
+<style>
+
+    
+    body{
+   font-family:'Droid Arabic Kufi', serif;
+ }
+   h2, .mdl-button{
+    font-family:'Droid Arabic Kufi', serif;
+   }
+    .mdl-textfield__input, .mdl-textfield__label{
+      text-align:unset;
+     }
+    
+    .util-center {
+        margin: auto;
+    }
+
+    .util-max-512px {
+        max-width: 512px;
+    }
+
+    .util-spacing-h--40px {
+        margin-top: 40px;
+        margin-bottom: 40px
+    }
+    .util-no-decoration {
+        text-decoration: none;
+    }
+ .page-splash {
+  align-items: center;
+  background: radial-gradient(circle,#039be5,#01579b);
+  background-color: #0288d1;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10000;
+}
+
+header{
+  background-color:unset !important;
+}
+.mdl-layout__drawer-button{
+  color:unset;
+}
+#newPictureContainer {
+  margin: 0;
+  max-width: 100%;
+  max-height: 200px;
+}
+</style>
+
+<style>
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 140px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -75px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+.firebaseui-container{
+  width:80%;
+}
+
+.demo-card-wide.mdl-card {
+  
+}
+
+}
+.demo-list-three{
+  width: 100%;
+}
+.mdl-list__item-primary-content{
+ 
+  cursor: pointer;
+  
+}
+.active{
+  background-color:#eee;
+}
+.mdl-list__item-text-body{
+   border-bottom: 1px solid darkgrey;
+}
+</style>
+</head>
+
+<body class="mdl-color--blue-grey-5">
+ <!-- Uses a header that scrolls with the text, rather than staying
+  locked at the top -->
+
+ 
+ 
+ <!-- LOGIN FORM -->
+<div class="page-splash" > 
+ <!-- Logo -->
+     
+      <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">SignIn</h2>
+  </div>
+  <div class="mdl-card__supporting-text">
+   
+   <p> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <input class="mdl-textfield__input" id="form_email" type="text" id="sample3">
+    <label class="mdl-textfield__label" for="sample3">Email</label>
+  </div>
+</p>
+<p> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <input class="mdl-textfield__input" id="form_pass" type="password"  id="sample4">
+    <label class="mdl-textfield__label" for="sample4">Password</label>
+  </div>
+</p>
+
+  </div>
+  <div class="mdl-card__actions mdl-card--border">
+   
+    <button onclick="signIn()" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+  Button
+</button>
+
+  </div>
+  <div class="mdl-card__menu">
+    <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+      <i class="material-icons">share</i>
+    </button>
+  </div>
+</div>
+</div>
+
+
+<div class="mdl-layout mdl-js-layout">
+  <header class="mdl-layout__header">
+    <div class="mdl-layout-icon"></div>
+    <div class="mdl-layout__header-row">
+      <span class="mdl-layout__title">Material Design Lite</span>
+      <div class="mdl-layout-spacer"></div>
+      <nav class="mdl-navigation">
+        <a class="mdl-navigation__link" href="#">Hello</a>
+        <a class="mdl-navigation__link" href="#">World.</a>
+        <a class="mdl-navigation__link" href="#">How</a>
+        <a class="mdl-navigation__link" href="#">Are</a>
+        <a class="mdl-navigation__link" href="#">You?</a>
+      </nav>
+    </div>
+  </header>
+  <div class="mdl-layout__drawer">
+    <span class="mdl-layout__title">Material Design Lite</span>
+    <nav class="mdl-navigation">
+      <a class="mdl-navigation__link" href="#">Hello</a>
+      <a class="mdl-navigation__link" href="#">World.</a>
+      <a class="mdl-navigation__link" href="#">How</a>
+      <a class="mdl-navigation__link" href="#">Are</a>
+      <a class="mdl-navigation__link" href="#">You?</a>
+    </nav>
+  </div>
+  <main class="mdl-layout__content">
+
+      
+
+      <div class="mdl-grid">
+  
+  <div class="mdl-cell mdl-cell--8-col">
+    
+
+<ul class="demo-list-three mdl-list" id="nf_list">
+
+</ul>
+
+
+  </div>
+  <div class="mdl-cell mdl-cell--4-col">
+    
+<div id='detail_card' name='crd' style="width: 100%" class="demo-card-wide mdl-card "></div>
+  
+
+</div>
+
+    </div>
+  </main>
+</div>
+
+
+</body>
+
+ 
+
+ 
+
+<!-- Material Design Lite JavaScript -->
+<script src="https://storage.googleapis.com/code.getmdl.io/1.3.0/material.min.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/7.15.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.15.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.15.0/firebase-database.js"></script>
+
+<script>
+  
+
+   $('.page-splash').hide();
+
+var socket = null;
+var uri = "ws://192.168.1.38:9090";
+function connect(){
+  
+   console.log('connecting to: '+uri);
+  
+  socket = new WebSocket(uri);
+  socket.onmessage = (event) => {
+   const msg = JSON.parse(event.data);
+   console.log("new msg: "+msg);
+   
+  if(msg.key) {
+   
+    addElement(msg.key, msg);
+  }
+};
+socket.onopen = (event) => {
+  console.log('connection opened');
+};
+
+socket.onclose = function(e) {
+  
+   console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+    setTimeout(function() {
+      connect(uri);
+    }, 5000);
+    /*
+  if (event.wasClean) {
+   
+    console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+  } else {
+    // e.g. server process killed or network down
+    // event.code is usually 1006 in this case
+    console.log('[close] Connection died');
+    
+  }*/
+ 
+};
+
+socket.onerror = function(error) {
+  console.log('websocket error: '+error);
+   socket.close();
+};
+}
+
+connect(uri);
+
+var notifications = {};
+
+
+  function sendAction(key, action, input, text){
+  
+  
+  const update = {};
+  update['key'] = key;
+   update["id"] = action;
+   update["t"] = getRandomInt(0, 9);
+    if(text) update["input"] = text;
+    else if(input){
+      let reply =prompt('Reply to message');
+     if(reply != null){
+     
+      update['input'] = reply;
+       
+     }
+     else {
+      console.log('empty response');
+      return;
+   }
+    }
+    
+   if(socket && socket != null) socket.send(JSON.stringify(update));
+   else console.log('no connection');
+   
+
+}
+  
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function go(e){
+  console.log('submit')
+  e.preventDefault();
+  const res = $('#res_input').val();
+  const key = $('#res_input').attr('name');
+  const action = $('#res_form').attr('action');
+  if(res && action && key) sendAction(key, action, res);
+};
+
+
+
+
+function showDetails(key){
+
+ const nf = notifications[key];
+ var body = nf.text;
+ 
+
+ if(nf.messages){
+
+    body = ``;
+    for(var msg of nf.messages) body = body.concat(`<p>${msg}</p>`);  
+ }
+
+  var actions = ``;
+  if(nf.actions)
+    for(var ac of nf.actions) {
+
+ 
+     actions = actions.concat(` <a onclick="sendAction('${key}',${ac.id}, ${ac.in})" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">${ac.title}</a>`);
+    }
+    
+  
+    
+  var image = "";
+  var licon = "";
+  if(nf.image) image = `<p><img style = "width:100%;" src="data:image/png;base64, ${nf.image}" alt="Red dot"><p>`;
+  if(nf.licon) licon = `<img class="mdl-list__item-avatar" src="data:image/png;base64, ${nf.licon}" alt="Red dot" />`;
+
+  var card = `<div class="mdl-card__title" >
+  
+    <h2 class="mdl-card__title-text">${nf.title}</h2>
+  </div>
+  <div class="mdl-card__supporting-text">
+    ${image}
+     ${body}
+   
+
+  <div class="mdl-card__actions mdl-card--border">
+   
+  ${actions}
+  </div>
+  <div class="mdl-card__menu">
+    <button  class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+     
+    </button>
+    ${licon}
+  </div>
+</div>`;
+$('#detail_card').html(card);
+$('#detail_card').attr('name', key);
+componentHandler.upgradeElements($("#detail_card"));
+}
+
+
+function addElement(key, nf){
+  
+  if(nf.delete){
+    if(document.getElementById(key))document.getElementById(key).remove();
+     if($('#detail_card').attr('name') == key) $('#detail_card').html('deleted');//showDetails(key);
+    delete notifications[key];
+    return;
+  }
+  var title = key;
+  var text = "";
+  
+  if(nf.title)  title = nf.title;
+  if(nf.text) text = nf.text;
+  var actions = ``;
+ 
+ var el = ` <li style="cursor:pointer;border-bottom:1px solid darkgrey" onclick="showDetails('${key}')" class="mdl-list__item mdl-list__item--three-line" id="${key}">
+    <span class="mdl-list__item-primary-content">
+     <img class="mdl-list__item-avatar" src="data:image/png;base64, ${nf.icon}" alt="Red dot" />
+     
+
+      <span>${title}</span>
+      <span class="mdl-list__item-text-body">
+       ${text.substring(0, 240)}
+      </span>
+    </span>
+    
+  </li>`;
+ 
+  if(document.getElementById(key))document.getElementById(key).remove();
+delete notifications[key];
+ notifications[key] = nf;
+ $('#nf_list').prepend(el);
+ componentHandler.upgradeElements($("li"));
+ if($('#detail_card').attr('name') == key) showDetails(key);
+}
+
+  
+function snack(msg){
+
+    var handler = function(event) {
+         showSnackbarButton.style.backgroundColor = '';
+      };         
+  var data = {
+      message: msg,
+      timeout: 2000,
+      actionHandler: handler,
+      actionText: 'OK'
+    };
+  document.querySelector('#toast').MaterialSnackbar.showSnackbar(data);             
+   }
+
+
+
+</script>
+ <!-- MDL toast -->
+<div id="toast" class="mdl-js-snackbar mdl-snackbar">
+  <div class="mdl-snackbar__text"></div>
+  <button  class="mdl-snackbar__action" type="button"></button>  
+</div>
+
+
+</body>
+</html>
