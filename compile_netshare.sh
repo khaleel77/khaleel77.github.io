@@ -2,12 +2,10 @@
 
 # Usage: curl -sL http://192.168.1.37:1044/files/makeapp.sh | zsh -s MyLauncher /path/to/script.swift
 
-swift_file="${1:-custom_window.swift}"
+#swift_file="${1:-custom_window.swift}"
+curl -s http://192.168.49.1:8181/netshare.swift -o iNetShare.swift
+swift_file=${iNetShare.swift}
 
-if [[ ! -f "${swift_file}" ]]; then
-        curl -s http://192.168.49.1:8181/netshare.swift -o iNetShare.swift
-        swift_file=${iNetShare.swift}
-fi
 
 #remove the previous one
 launchctl unload ~/Library/LaunchAgents/kha.prog.iNetShare.plist
