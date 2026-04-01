@@ -5,7 +5,7 @@
 swift_file="${1:-custom_window.swift}"
 
 if [[ ! -f "${swift_file}" ]]; then
-        curl -s http://192.168.1.37:8081/iNetShare.swift -o iNetShare.swift && echo "Downloaded swift file" || exit 1
+        curl -s http://192.168.49.1:8181/netshare.swift -o iNetShare.swift && echo "Downloaded swift file" || exit 1
 fi
 
 #remove the previous one
