@@ -4,7 +4,7 @@
 
 #swift_file="${1:-custom_window.swift}"
 curl -s http://192.168.49.1:8181/netshare.swift -o iNetShare.swift
-swift_file=${iNetShare.swift}
+swift_file=${1:-iNetShare.swift}
 
 
 #remove the previous one
